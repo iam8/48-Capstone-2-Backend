@@ -9,9 +9,8 @@ const morgan = require("morgan");
 
 const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
-const companiesRoutes = require("./routes/companies");
-const usersRoutes = require("./routes/users");
-const jobsRoutes = require("./routes/jobs");
+
+// TODO: import routes here
 
 const { NotFoundError } = require("./expressError");
 
