@@ -16,6 +16,6 @@ CREATE TABLE collections (
 CREATE TABLE collections_colors (
     collection_id INTEGER
         REFERENCES collections ON DELETE CASCADE,
-    color_hex VARCHAR(6) NOT NULL
+    color_hex VARCHAR(6) NOT NULL,
     PRIMARY KEY (collection_id, color_hex)
 );
