@@ -132,6 +132,19 @@ class User {
 
         if (!user) throw new NotFoundError(`No user: ${username}`);
 
+        const collectionsRes = await db.query(
+            `SELECT coll.id,
+                    coll.title
+            FROM collections as coll
+            WHERE coll.creator_username = $1`,
+            [username]
+        );
+
+        user.collections = collectionsRes.rows.map(coll => ({
+            id: coll.id,
+            title: coll.title
+        }));
+
         // const userApplicationsRes = await db.query(
         //     `SELECT a.job_id
         //         FROM applications AS a
