@@ -18,7 +18,7 @@ class User {
 
     /** authenticate user with username, password.
      *
-     * Returns { username, first_name, last_name, is_admin }
+     * Returns { username, firstName, lastName, isAdmin }
      *
      * Throws UnauthorizedError is user not found or wrong password.
      **/
@@ -51,11 +51,11 @@ class User {
 
     /** Register user with data.
      *
-     * Returns { username, firstName, lastName, email, isAdmin }
+     * Returns { username, firstName, lastName, isAdmin }
      *
      * Throws BadRequestError on duplicates.
      **/
-    static async register({ username, password, firstName, lastName, email, isAdmin }) {
+    static async register({ username, password, firstName, lastName, isAdmin }) {
         const duplicateCheck = await db.query(
             `SELECT username
                 FROM users
@@ -72,20 +72,18 @@ class User {
         const result = await db.query(
             `INSERT INTO users
                 (username,
-                    password,
-                    first_name,
-                    last_name,
-                    email,
-                    is_admin)
-                VALUES ($1, $2, $3, $4, $5, $6)
-                RETURNING username, first_name AS "firstName", last_name AS "lastName", email,
+                password,
+                first_name,
+                last_name,
+                is_admin)
+                VALUES ($1, $2, $3, $4, $5)
+                RETURNING username, first_name AS "firstName", last_name AS "lastName",
                 is_admin AS "isAdmin"`,
             [
                 username,
                 hashedPassword,
                 firstName,
                 lastName,
-                email,
                 isAdmin,
             ],
         );
@@ -96,7 +94,7 @@ class User {
 
     /** Find all users.
      *
-     * Returns [{ username, first_name, last_name, email, is_admin }, ...]
+     * Returns [{ username, firstName, lastName, is_admin }, ...]
      **/
     static async findAll() {
         const result = await db.query(
@@ -104,7 +102,6 @@ class User {
                 username,
                 first_name AS "firstName",
                 last_name AS "lastName",
-                email,
                 is_admin AS "isAdmin"
             FROM users
             ORDER BY username`,
@@ -115,8 +112,8 @@ class User {
 
     /** Given a username, return data about user.
      *
-     * Returns { username, first_name, last_name, is_admin, jobs }
-     *   where jobs is { id, title, company_handle, company_name, state }
+     * Returns { username, firstName, lastName, isAdmin, collections}
+     *   where collections is { id, title, colorList }
      *
      * Throws NotFoundError if user not found.
      **/
@@ -125,7 +122,6 @@ class User {
             `SELECT username,
                     first_name AS "firstName",
                     last_name AS "lastName",
-                    email,
                     is_admin AS "isAdmin"
             FROM users
             WHERE username = $1`,
@@ -136,13 +132,14 @@ class User {
 
         if (!user) throw new NotFoundError(`No user: ${username}`);
 
-        const userApplicationsRes = await db.query(
-            `SELECT a.job_id
-                FROM applications AS a
-                WHERE a.username = $1`,
-            [username]);
+        // const userApplicationsRes = await db.query(
+        //     `SELECT a.job_id
+        //         FROM applications AS a
+        //         WHERE a.username = $1`,
+        //     [username]);
 
-        user.applications = userApplicationsRes.rows.map(a => a.job_id);
+        // user.applications = userApplicationsRes.rows.map(a => a.job_id);
+
         return user;
     }
 
@@ -152,9 +149,9 @@ class User {
      * all the fields; this only changes provided ones.
      *
      * Data can include:
-     *   { firstName, lastName, password, email, isAdmin }
+     *   { firstName, lastName, password, isAdmin }
      *
-     * Returns { username, firstName, lastName, email, isAdmin }
+     * Returns { username, firstName, lastName, isAdmin }
      *
      * Throws NotFoundError if not found.
      *
@@ -183,7 +180,6 @@ class User {
                             RETURNING username,
                                         first_name AS "firstName",
                                         last_name AS "lastName",
-                                        email,
                                         is_admin AS "isAdmin"`;
         const result = await db.query(querySql, [...values, username]);
         const user = result.rows[0];
