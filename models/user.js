@@ -94,7 +94,7 @@ class User {
 
     /** Find all users.
      *
-     * Returns [{ username, firstName, lastName, is_admin }, ...]
+     * Returns [{ username, firstName, lastName, isAdmin }, ...]
      **/
     static async findAll() {
         const result = await db.query(
