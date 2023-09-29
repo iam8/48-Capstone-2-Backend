@@ -16,11 +16,12 @@ const { BCRYPT_WORK_FACTOR } = require("../config.js");
 /** Related functions for users. */
 class User {
 
-    /** authenticate user with username, password.
+    /**
+     * Authenticate user with username, password.
      *
-     * Returns { username, firstName, lastName, isAdmin }
+     * Returns { username, firstName, lastName, isAdmin }.
      *
-     * Throws UnauthorizedError is user not found or wrong password.
+     * Throws UnauthorizedError is user not found or password is wrong.
      **/
     static async authenticate(username, password) {
         // Try to find the user first
@@ -49,11 +50,12 @@ class User {
         throw new UnauthorizedError("Invalid username/password");
     }
 
-    /** Register user with data.
+    /**
+     * Register user with data: { username, password, firstName, lastName, isAdmin }.
      *
-     * Returns { username, firstName, lastName, isAdmin }
+     * Returns { username, firstName, lastName, isAdmin }.
      *
-     * Throws BadRequestError on duplicates.
+     * Throws BadRequestError on duplicate usernames.
      **/
     static async register({ username, password, firstName, lastName, isAdmin }) {
         const duplicateCheck = await db.query(
@@ -92,9 +94,10 @@ class User {
         return user;
     }
 
-    /** Find all users.
+    /**
+     * Find all users.
      *
-     * Returns [{ username, firstName, lastName, isAdmin }, ...]
+     * Returns [{ username, firstName, lastName, isAdmin }, ...].
      **/
     static async findAll() {
         const result = await db.query(
@@ -110,10 +113,11 @@ class User {
         return result.rows;
     }
 
-    /** Given a username, return data about user.
+    /**
+     * Given a username, return data about user.
      *
-     * Returns { username, firstName, lastName, isAdmin, collections}
-     *   where collections is { id, title, colorList }
+     * Returns { username, firstName, lastName, isAdmin, collections }
+     *   where collections is { id, title }.
      *
      * Throws NotFoundError if user not found.
      **/
@@ -148,7 +152,8 @@ class User {
         return user;
     }
 
-    /** Update user data with `data`.
+    /**
+     * Update user data with `data`.
      *
      * This is a "partial update" --- it's fine if data doesn't contain
      * all the fields; this only changes provided ones.
@@ -156,7 +161,7 @@ class User {
      * Data can include:
      *   { firstName, lastName, password, isAdmin }
      *
-     * Returns { username, firstName, lastName, isAdmin }
+     * Returns { username, firstName, lastName, isAdmin }.
      *
      * Throws NotFoundError if not found.
      *
@@ -195,7 +200,13 @@ class User {
         return user;
     }
 
-    /** Delete given user from database; returns undefined. */
+    /**
+     * Delete given user (by username) from database.
+     *
+     * Returns undefined.
+     *
+     * Throws NotFoundError if user not found.
+     */
     static async remove(username) {
         let result = await db.query(
             `DELETE
