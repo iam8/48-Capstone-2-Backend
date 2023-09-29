@@ -130,7 +130,18 @@ class Collection {
      * Remove a collection by ID.
      */
     static async remove(id) {
+        const result = await db.query(`
+            DELETE FROM collections
+            WHERE id = $1
+            RETURNING id`,
+            [id]
+        );
 
+        if (!result.rows[0]) {
+            throw new NotFoundError(`No collection: ${id}`);
+        }
+
+        return {"deleted": id};
     }
 }
 
