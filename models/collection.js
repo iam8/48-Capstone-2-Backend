@@ -117,6 +117,28 @@ class Collection {
      */
     static async addColor({collectionId, colorHex}) {
 
+        // Check that collection exists
+        const collRes = await db.query(`
+            SELECT id FROM collections
+            WHERE id = $1`,
+            [collectionId]
+        );
+
+        if (!collRes.rows[0]) {
+            throw new NotFoundError(`No collection: ${collectionId}`);
+        }
+
+        // Insert color into collection
+        const result = await db.query(`
+            INSERT INTO collections_colors
+                (collection_id, color_hex)
+            VALUES
+                ($1, $2)
+            RETURNING collection_id AS "collectionId", color_hex AS "colorHex"`,
+            [collectionId, colorHex]
+        );
+
+        return result.rows[0];
     }
 
     /**
