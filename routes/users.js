@@ -1,6 +1,9 @@
 "use strict";
 
-/** Routes for users. */
+/** Routes for users.
+ *
+ * Base URL: /users
+*/
 
 const express = require("express");
 
