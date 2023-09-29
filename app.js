@@ -11,6 +11,9 @@ const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
 
 // TODO: import routes here
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/users");
+const collRoutes = require("./routes/collections");
 
 const { NotFoundError } = require("./expressError");
 
@@ -21,6 +24,10 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(authenticateJWT);
+
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
+app.use("/collections", collRoutes);
 
 
 /** Handle 404 errors. */
