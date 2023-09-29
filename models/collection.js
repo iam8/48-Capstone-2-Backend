@@ -78,7 +78,6 @@ class Collection {
             [username]
         );
 
-        console.log(`Retrieved collections by ${username}:`, result.rows);
         return result.rows;
     }
 
@@ -86,7 +85,12 @@ class Collection {
      * Get data on all collections.
      */
     static async getAll() {
+        const result = await db.query(`
+            SELECT id, title, creator_username AS "username"
+            FROM collections`
+        );
 
+        return result.rows;
     }
 
     /**
