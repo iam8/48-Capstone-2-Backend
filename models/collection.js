@@ -15,6 +15,26 @@ class Collection {
      */
     static async create({title, username, colorList=[]}) {
 
+        // Check that username exists
+        const userRes = await db.query(`
+            SELECT username FROM users
+            WHERE username = $1`,
+            [username]
+        );
+
+        if (!userRes.rows[0]) {
+            throw new NotFoundError(`No user: ${username}`);
+        }
+
+        // Insert collection
+        const result = await db.query(`
+            INSERT INTO collections (title, creator_username)
+            VALUES ($1, $2)
+            RETURNING id, title, creator_username AS "username"`,
+            [title, username]
+        );
+
+        return result.rows[0];
     }
 
     /**
