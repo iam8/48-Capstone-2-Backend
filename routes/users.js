@@ -117,3 +117,6 @@ router.delete("/:username", ensureCorrectUserOrAdmin, async function (req, res, 
         return next(err);
     }
 });
+
+
+module.exports = router;
