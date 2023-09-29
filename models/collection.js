@@ -9,6 +9,12 @@ class Collection {
 
     /**
      * Create a color collection, update database, and return new collection data.
+     *
+     * Accepts data: {title, username}
+     *
+     * Returns: {id, title, username}
+     *
+     * Throws NotFoundError if user not found.
      */
     static async create({title, username}) {
 
@@ -38,6 +44,11 @@ class Collection {
 
     /**
      * Get all data on a single collection by ID.
+     *
+     * Returns: {id, title, username, colors}, where colors is a list of color hex values in this
+     *  collection.
+     *
+     * Throws NotFoundError if no collection with the given ID exists.
      */
     static async getSingle(id) {
         const result = await db.query(`
@@ -63,7 +74,11 @@ class Collection {
     }
 
     /**
-     * Get data on all collections by a given user.
+     * Get list of data on every collection by a given user (by username).
+     *
+     * Returns: [{id, title, username}, ...]
+     *
+     * Throws NotFoundError if user is not found.
      */
     static async getAllByUser(username) {
 
@@ -89,7 +104,9 @@ class Collection {
     }
 
     /**
-     * Get data on all collections.
+     * Get list of data on every collection.
+     *
+     * Returns: {id, title, username}
      */
     static async getAll() {
         const result = await db.query(`
@@ -102,6 +119,12 @@ class Collection {
 
     /**
      * Rename a given collection.
+     *
+     * Accepts data: {id, newTitle}
+     *
+     * Returns: {id, title, username}, where title is the updated title.
+     *
+     * Throws NotFoundError if no collection with the given ID exists.
      */
     static async rename({id, newTitle}) {
         const result = await db.query(`
@@ -121,6 +144,13 @@ class Collection {
 
     /**
      * Add a new color to a collection.
+     *
+     * Accepts data: {collectionId, colorHex}, where colorHex is a 6-digit hex representation of a
+     *  color.
+     *
+     * Returns: {collectionId, colorHex}
+     *
+     * Throws NotFoundError if no collection with the given ID exists.
      */
     static async addColor({collectionId, colorHex}) {
 
@@ -150,6 +180,13 @@ class Collection {
 
     /**
      * Remove a color from a collection.
+     *
+     * Accepts data: {collectionId, colorHex}, where colorHex is a 6-digit hex representation of a
+     *  color.
+     *
+     * Returns: {deleted: {collectionId, colorHex}}
+     *
+     * Throws NotFoundError if the given collection-color association doesn't exist.
      */
     static async removeColor({collectionId, colorHex}) {
 
@@ -171,6 +208,10 @@ class Collection {
 
     /**
      * Remove a collection by ID.
+     *
+     * Returns: {deleted: {id}}
+     *
+     * Throws NotFoundError if no collection with the given ID exists.
      */
     static async remove(id) {
         const result = await db.query(`
