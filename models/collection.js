@@ -97,7 +97,19 @@ class Collection {
      * Rename a given collection.
      */
     static async rename({id, newTitle}) {
+        const result = await db.query(`
+            UPDATE collections
+            SET title = $1
+            WHERE id = $2
+            RETURNING id, title, creator_username AS "username"`,
+            [newTitle, id]
+        );
 
+        if (!result.rows[0]) {
+            throw new NotFoundError(`No collection: ${id}`);
+        }
+
+        return result.rows[0];
     }
 
     /**
