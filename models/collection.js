@@ -146,6 +146,20 @@ class Collection {
      */
     static async removeColor({collectionId, colorHex}) {
 
+        const result = await db.query(`
+            DELETE FROM collections_colors
+            WHERE collection_id = $1
+            AND color_hex = $2
+            RETURNING collection_id AS "collectionId", color_hex AS "colorHex"`,
+            [collectionId, colorHex]
+        );
+
+        if (!result.rows[0]) {
+            throw new NotFoundError(
+                `No collection with ID of ${collectionId} and color ${colorHex}`);
+        }
+
+        return {"deleted": {collectionId, colorHex}};
     }
 
     /**
@@ -163,7 +177,7 @@ class Collection {
             throw new NotFoundError(`No collection: ${id}`);
         }
 
-        return {"deleted": id};
+        return {"deleted": {id}};
     }
 }
 
