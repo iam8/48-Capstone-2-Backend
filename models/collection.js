@@ -60,6 +60,26 @@ class Collection {
      */
     static async getAllByUser(username) {
 
+        // Check that username exists
+        const userRes = await db.query(`
+            SELECT username FROM users
+            WHERE username = $1`,
+            [username]
+        );
+
+        if (!userRes.rows[0]) {
+            throw new NotFoundError(`No user: ${username}`);
+        }
+
+        const result = await db.query(`
+            SELECT id, title, creator_username AS "username"
+            FROM collections
+            WHERE creator_username = $1`,
+            [username]
+        );
+
+        console.log(`Retrieved collections by ${username}:`, result.rows);
+        return result.rows;
     }
 
     /**
