@@ -1,6 +1,9 @@
 "use strict";
 
-/** Routes for authentication. */
+/** Routes for authentication.
+ *
+ * Base URL: /auth
+ */
 
 const express = require("express");
 const router = new express.Router();
@@ -9,7 +12,7 @@ const User = require("../models/user");
 const { createToken } = require("../helpers/tokens");
 
 
-/** POST /auth/token: { username, password } => { token }
+/** POST /token: { username, password } => { token }
  *
  * Returns JWT token which can be used to authenticate further requests.
  *
@@ -33,9 +36,9 @@ router.post("/token", async function (req, res, next) {
 });
 
 
-/** POST /auth/register: { user } => { token }
+/** POST /register: { user } => { token }
  *
- * User data must include: { username, password, firstName, lastName, email }
+ * User data must include: { username, password, firstName, lastName }
  *
  * Returns JWT token which can be used to authenticate further requests.
  *
