@@ -41,7 +41,18 @@ class Collection {
      * Get all data on a single collection by ID.
      */
     static async getSingle(id) {
+        const result = await db.query(`
+            SELECT id, title, creator_username AS "username"
+            FROM collections
+            WHERE id = $1`,
+            [id]
+        );
 
+        if (!result.rows[0]) {
+            throw new NotFoundError(`No collection: ${id}`);
+        }
+
+        return result.rows[0];
     }
 
     /**
