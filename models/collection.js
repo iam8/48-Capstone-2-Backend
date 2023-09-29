@@ -1,19 +1,16 @@
 "use strict";
 
 const db = require("../colors-db");
-const {
-    NotFoundError,
-    BadRequestError,
-    UnauthorizedError,
-} = require("../expressError");
+const {NotFoundError} = require("../expressError");
 
 
 /** Related functions for color collections. */
 class Collection {
+
     /**
      * Create a color collection, update database, and return new collection data.
      */
-    static async create({title, username, colorList=[]}) {
+    static async create({title, username}) {
 
         // Check that username exists
         const userRes = await db.query(`
@@ -27,14 +24,16 @@ class Collection {
         }
 
         // Insert collection
-        const result = await db.query(`
-            INSERT INTO collections (title, creator_username)
-            VALUES ($1, $2)
+        const collRes = await db.query(`
+            INSERT INTO collections
+                (title, creator_username)
+            VALUES
+                ($1, $2)
             RETURNING id, title, creator_username AS "username"`,
             [title, username]
         );
 
-        return result.rows[0];
+        return collRes.rows[0];
     }
 
     /**
@@ -42,17 +41,25 @@ class Collection {
      */
     static async getSingle(id) {
         const result = await db.query(`
-            SELECT id, title, creator_username AS "username"
+            SELECT id, title, creator_username AS "username", color_hex as "colorHex"
             FROM collections
+                JOIN collections_colors
+                ON collections.id = collections_colors.collection_id
             WHERE id = $1`,
             [id]
         );
 
-        if (!result.rows[0]) {
+        const row0 = result.rows[0];
+
+        if (!row0) {
             throw new NotFoundError(`No collection: ${id}`);
         }
 
-        return result.rows[0];
+        // Put together final result
+        const {title, username} = row0;
+        const colors = result.rows.map(row => row.colorHex);
+
+        return {id, title, username, colors};
     }
 
     /**
