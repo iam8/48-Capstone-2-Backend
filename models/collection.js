@@ -1,7 +1,7 @@
 "use strict";
 
 const db = require("../colors-db");
-const {NotFoundError} = require("../expressError");
+const {NotFoundError, BadRequestError} = require("../expressError");
 
 
 /** Related functions for color collections. */
@@ -164,6 +164,19 @@ class Collection {
 
         if (!collRes.rows[0]) {
             throw new NotFoundError(`No collection: ${collectionId}`);
+        }
+
+        // Check that color doesn't exist in collection
+        const duplicateCheck = await db.query(
+            `SELECT color_hex
+                FROM collections_colors
+                WHERE collection_id = $1
+                AND color_hex = $2`,
+            [collectionId, colorHex],
+        );
+
+        if (duplicateCheck.rows[0]) {
+            throw new BadRequestError(`Duplicate color: ${colorHex}`);
         }
 
         // Insert color into collection
