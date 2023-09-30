@@ -20,7 +20,7 @@ const router = new express.Router();
 //     > DELETE /[id]/[hex] - remove a color from a collection of current user
 //     > GET /[id] - get info on a collection by ID, of current user (DONE)
 //     > GET / - get all collections
-//     > GET /[username] - get all collections by a user
+//     > GET /users/[username] - get all collections by a user
 //     > PATCH /[id] - rename a collection of current user
 //     > DELETE /[id] - delete a collection of current user
 
@@ -117,12 +117,17 @@ router.get("/", ensureAdmin, async (req, res, next) => {
 })
 
 
-/**
- * Get all collections by a user.
+/** GET /users/:username - get all collections by a user.
+ *
+ * Returns: {collections: [id, title, username]}.
+ *
+ * Authorization required: admin or corresponding user (to given username)
  */
-router.get("/:username", ensureCorrectUserOrAdmin, async(req, res, next) => {
+router.get("/users/:username", ensureCorrectUserOrAdmin, async(req, res, next) => {
     try {
         const { username } = req.params;
+        const collections = await Collection.getAllByUser(username);
+        return res.json({collections});
     } catch(err) {
         return next(err);
     }
