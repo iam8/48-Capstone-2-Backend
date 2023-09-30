@@ -15,14 +15,14 @@ const router = new express.Router();
 
 
 // Collections routes (collections.js)
-//     > POST /[username] - create new collection for a user
-//     > POST /[id] - add color to collection
-//     > DELETE /[id]/[hex] - remove a color from a collection
-//     > GET /[id] - get info on a collection by ID
+//     > POST / - create new collection for current user
+//     > POST /[id] - add color to collection of current user
+//     > DELETE /[id]/[hex] - remove a color from a collection of current user
+//     > GET /[id] - get info on a collection by ID, of current user
 //     > GET / - get all collections
 //     > GET /[username] - get all collections by a user
-//     > PATCH /[id] - rename a collection
-//     > DELETE /[id] - delete a collection
+//     > PATCH /[id] - rename a collection of current user
+//     > DELETE /[id] - delete a collection of current user
 
 // TODO: implement check that a collection with a given ID belongs to the current user (or user is
 // admin)
@@ -31,12 +31,21 @@ const router = new express.Router();
  * with the collection matches the username of the currently-logged-in user) */
 
 
-/**
- * Create new collection for a user.
+/** POST / - create new collection for the current user.
+ *
+ * Accepts data: { title }, where 'title' is the name of the new collection.
+ *
+ * Returns: {collection: {id, title, username}} for the created collection.
+ *
+ * Authorization required: logged in
  */
-router.post("/:username", ensureCorrectUserOrAdmin, async (req, res, next) => {
+router.post("/", ensureLoggedIn, async (req, res, next) => {
     try {
-        const { username } = req.params;
+        const { username } = res.locals.user;
+        const { title } = req.body;
+
+        const collection = await Collection.create({title, username});
+        return res.json({collection});
     } catch(err) {
         return next(err);
     }
