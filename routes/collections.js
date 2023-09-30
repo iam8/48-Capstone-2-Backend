@@ -15,7 +15,7 @@ const router = new express.Router();
 
 
 // Collections routes (collections.js)
-//     > POST / - create new collection for current user
+//     > POST / - create new collection for current user (DONE)
 //     > POST /[id] - add color to collection of current user
 //     > DELETE /[id]/[hex] - remove a color from a collection of current user
 //     > GET /[id] - get info on a collection by ID, of current user
@@ -76,12 +76,25 @@ router.delete("/:id/:hex", ensureLoggedIn, async (req, res, next) => {
 })
 
 
-/**
- * Get info on a collection.
+/** GET /[id] - get info on a collection by the current user, by ID.
+ *
+ * Returns: {collection: {id, title, username, colors}}.
+ *
+ * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", ensureLoggedIn, async (req, res, next) => {
     try {
         const { id } = req.params;
+        const collection = await Collection.getSingle(id);
+
+        // Check that user is the collection owner
+        // TODO: put this code in a helper function
+        const { username, isAdmin } = res.locals.user;
+        if (!isAdmin && collection.username !== username) {
+            throw new UnauthorizedError("Unauthorized: current user does not own this collection");
+        }
+
+        return res.json({collection});
     } catch(err) {
         return next(err);
     }
