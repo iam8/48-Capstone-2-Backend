@@ -68,7 +68,8 @@ class Collection {
 
         // Put together final result
         const {title, username} = row0;
-        const colors = result.rows.map(row => row.colorHex);
+        const colors = row0.colorHex ?
+            result.rows.map(row => row.colorHex) : [];
 
         return {id, title, username, colors};
     }
