@@ -3,8 +3,10 @@
 /** Convenience middleware to handle common auth cases in routes. */
 
 const jwt = require("jsonwebtoken");
+
 const { SECRET_KEY } = require("../config");
 const { UnauthorizedError } = require("../expressError");
+const Collection = require("../models/collection");
 
 
 /** Middleware: Authenticate user.
@@ -78,9 +80,33 @@ function ensureCorrectUserOrAdmin(req, res, next) {
 }
 
 
+/**
+ * Ensure that current user is an admin or is the owner of the collection specified by ID in the
+ * URL parameters.
+ *
+ * If not, raises Unauthorized.
+ */
+async function ensureAdminOrCollectionOwner(req, res, next) {
+    try {
+        const { id } = req.params;
+        const collection = await Collection.getSingle(id);
+        const { username, isAdmin } = res.locals.user;
+
+        if (!isAdmin && collection.username !== username) {
+            throw new UnauthorizedError("Unauthorized: current user does not own this collection");
+        }
+
+        return next();
+    } catch(err) {
+        return next(err);
+    }
+}
+
+
 module.exports = {
     authenticateJWT,
     ensureLoggedIn,
     ensureAdmin,
-    ensureCorrectUserOrAdmin
+    ensureCorrectUserOrAdmin,
+    ensureAdminOrCollectionOwner
 };
