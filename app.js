@@ -8,9 +8,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 
 const { authenticateJWT } = require("./middleware/auth");
-const authRoutes = require("./routes/auth");
 
-// TODO: import routes here
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
 const collRoutes = require("./routes/collections");
