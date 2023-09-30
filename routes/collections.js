@@ -18,7 +18,7 @@ const router = new express.Router();
 //     > POST / - create new collection for current user (DONE)
 //     > POST /[id] - add color to collection of current user
 //     > DELETE /[id]/[hex] - remove a color from a collection of current user
-//     > GET /[id] - get info on a collection by ID, of current user
+//     > GET /[id] - get info on a collection by ID, of current user (DONE)
 //     > GET / - get all collections
 //     > GET /[username] - get all collections by a user
 //     > PATCH /[id] - rename a collection of current user
@@ -45,7 +45,7 @@ router.post("/", ensureLoggedIn, async (req, res, next) => {
         const { title } = req.body;
 
         const collection = await Collection.create({title, username});
-        return res.json({collection});
+        return res.status(201).json({collection});
     } catch(err) {
         return next(err);
     }
@@ -101,12 +101,16 @@ router.get("/:id", ensureLoggedIn, async (req, res, next) => {
 })
 
 
-/**
- * Get all collections.
+/** GET / - get all collections.
+ *
+ * Returns: {collections: [{id, title, username}]}.
+ *
+ * Authorization required: admin
  */
 router.get("/", ensureAdmin, async (req, res, next) => {
     try {
-        true;
+        const collections = await Collection.getAll();
+        return res.json({collections});
     } catch(err) {
         return next(err);
     }
