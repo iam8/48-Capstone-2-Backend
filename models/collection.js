@@ -54,7 +54,7 @@ class Collection {
         const result = await db.query(`
             SELECT id, title, creator_username AS "username", color_hex as "colorHex"
             FROM collections
-                JOIN collections_colors
+                LEFT JOIN collections_colors
                 ON collections.id = collections_colors.collection_id
             WHERE id = $1`,
             [id]
