@@ -1,4 +1,7 @@
 -- Add some example users to database. Both have password of 'password'.
+-- User 'example1' token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImV4YW1wbGUxIiwiaXNBZG1pbiI6dHJ1ZSwiaWF0IjoxNjk2MDMyODc4fQ.lhAbXTLaSEA6iGxsHMgJiPOdIIXLXiTJAbGkr2ZTma4
+-- User 'example2' token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImV4YW1wbGUyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTY5NjAzMjkwMH0.tedoGyBiDAjQ91Uxepf0LHslaPrepShmXwcQMNNGaqM
+-- User 'example3' token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImV4YW1wbGUzIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTY5NjAzMjk3OH0.uRNKHCiglxSAwx1zlPcCdCNwC9ZdaFIqSiAK7fyTws8
 INSERT INTO users
     (
         username,
@@ -13,7 +16,7 @@ VALUES
         '$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q',
         'first1',
         'last1',
-        FALSE
+        TRUE
     ),
     (
         'example2',
