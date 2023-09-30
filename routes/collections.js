@@ -8,27 +8,14 @@
 const express = require("express");
 
 const Collection = require("../models/collection");
-const {UnauthorizedError} = require("../expressError");
-const {ensureLoggedIn, ensureAdmin, ensureCorrectUserOrAdmin} = require("../middleware/auth");
+const {
+    ensureLoggedIn,
+    ensureAdmin,
+    ensureCorrectUserOrAdmin,
+    ensureAdminOrCollectionOwner
+} = require("../middleware/auth");
 
 const router = new express.Router();
-
-
-// Collections routes (collections.js)
-//     > POST / - create new collection for current user (DONE)
-//     > POST /[id]/colors - add color to collection of current user (DONE)
-//     > DELETE /[id]/colors/[hex] - remove a color from a collection of current user (DONE)
-//     > GET /[id] - get info on a collection by ID, of current user (DONE)
-//     > GET / - get all collections (DONE)
-//     > GET /users/[username] - get all collections by a user (DONE)
-//     > PATCH /[id] - rename a collection of current user (DONE)
-//     > DELETE /[id] - delete a collection of current user (DONE)
-
-// TODO: implement check that a collection with a given ID belongs to the current user (or user is
-// admin)
-
-/** Ensure that a retrieved collection belongs to the current user (i.e. the username associated
- * with the collection matches the username of the currently-logged-in user) */
 
 
 /** POST / - create new collection for the current user.
@@ -60,25 +47,22 @@ router.post("/", ensureLoggedIn, async (req, res, next) => {
  *
  * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
-router.post("/:id/colors", ensureLoggedIn, async (req, res, next) => {
-    try {
-        const { id: collectionId } = req.params;
-        const {colorHex} = req.body;
+router.post(
+    "/:id/colors",
+    ensureLoggedIn,
+    ensureAdminOrCollectionOwner,
+    async (req, res, next) => {
+        try {
+            const { id: collectionId } = req.params;
+            const {colorHex} = req.body;
 
-        // Check that user is the collection owner
-        // TODO: put this code in a helper function
-        const collection = await Collection.getSingle(collectionId);
-        const { username, isAdmin } = res.locals.user;
-        if (!isAdmin && collection.username !== username) {
-            throw new UnauthorizedError("Unauthorized: current user does not own this collection");
+            const addResult = await Collection.addColor({collectionId, colorHex});
+            return res.status(201).json(addResult);
+        } catch(err) {
+            return next(err);
         }
-
-        const addResult = await Collection.addColor({collectionId, colorHex});
-        return res.status(201).json(addResult);
-    } catch(err) {
-        return next(err);
     }
-})
+)
 
 
 /** DELETE /[id]/colors/[hex] - remove a color from a collection.
@@ -87,24 +71,21 @@ router.post("/:id/colors", ensureLoggedIn, async (req, res, next) => {
  *
  * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
-router.delete("/:id/colors/:hex", ensureLoggedIn, async (req, res, next) => {
-    try {
-        const { id: collectionId, hex: colorHex } = req.params;
+router.delete(
+    "/:id/colors/:hex",
+    ensureLoggedIn,
+    ensureAdminOrCollectionOwner,
+    async (req, res, next) => {
+        try {
+            const { id: collectionId, hex: colorHex } = req.params;
 
-        // Check that user is the collection owner
-        // TODO: put this code in a helper function
-        const collection = await Collection.getSingle(collectionId);
-        const { username, isAdmin } = res.locals.user;
-        if (!isAdmin && collection.username !== username) {
-            throw new UnauthorizedError("Unauthorized: current user does not own this collection");
+            const deleteRes = await Collection.removeColor({collectionId, colorHex});
+            return res.json(deleteRes);
+        } catch(err) {
+            return next(err);
         }
-
-        const deleteRes = await Collection.removeColor({collectionId, colorHex});
-        return res.json(deleteRes);
-    } catch(err) {
-        return next(err);
     }
-})
+)
 
 
 /** GET /[id] - get info on a collection by ID.
@@ -113,18 +94,11 @@ router.delete("/:id/colors/:hex", ensureLoggedIn, async (req, res, next) => {
  *
  * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
-router.get("/:id", ensureLoggedIn, async (req, res, next) => {
+router.get("/:id", ensureLoggedIn, ensureAdminOrCollectionOwner, async (req, res, next) => {
     try {
         const { id } = req.params;
+
         const collection = await Collection.getSingle(id);
-
-        // Check that user is the collection owner
-        // TODO: put this code in a helper function
-        const { username, isAdmin } = res.locals.user;
-        if (!isAdmin && collection.username !== username) {
-            throw new UnauthorizedError("Unauthorized: current user does not own this collection");
-        }
-
         return res.json({collection});
     } catch(err) {
         return next(err);
@@ -157,6 +131,7 @@ router.get("/", ensureAdmin, async (req, res, next) => {
 router.get("/users/:username", ensureCorrectUserOrAdmin, async(req, res, next) => {
     try {
         const { username } = req.params;
+
         const collections = await Collection.getAllByUser(username);
         return res.json({collections});
     } catch(err) {
@@ -173,18 +148,10 @@ router.get("/users/:username", ensureCorrectUserOrAdmin, async(req, res, next) =
  *
  * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
-router.patch("/:id", ensureLoggedIn, async (req, res, next) => {
+router.patch("/:id", ensureLoggedIn, ensureAdminOrCollectionOwner, async (req, res, next) => {
     try {
         const { id } = req.params;
         const {newTitle} = req.body;
-
-        // Check that user is the collection owner
-        // TODO: put this code in a helper function
-        const collection = await Collection.getSingle(id);
-        const { username, isAdmin } = res.locals.user;
-        if (!isAdmin && collection.username !== username) {
-            throw new UnauthorizedError("Unauthorized: current user does not own this collection");
-        }
 
         const updated = await Collection.rename({id, newTitle});
         return res.json({updated});
@@ -200,17 +167,9 @@ router.patch("/:id", ensureLoggedIn, async (req, res, next) => {
  *
  * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
-router.delete("/:id", ensureLoggedIn, async (req, res, next) => {
+router.delete("/:id", ensureLoggedIn, ensureAdminOrCollectionOwner, async (req, res, next) => {
     try {
         const { id } = req.params;
-
-        // Check that user is the collection owner
-        // TODO: put this code in a helper function
-        const collection = await Collection.getSingle(id);
-        const { username, isAdmin } = res.locals.user;
-        if (!isAdmin && collection.username !== username) {
-            throw new UnauthorizedError("Unauthorized: current user does not own this collection");
-        }
 
         const deleteRes = await Collection.remove(id);
         return res.json(deleteRes);
