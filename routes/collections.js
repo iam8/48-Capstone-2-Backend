@@ -16,13 +16,13 @@ const router = new express.Router();
 
 // Collections routes (collections.js)
 //     > POST / - create new collection for current user (DONE)
-//     > POST /[id] - add color to collection of current user
-//     > DELETE /[id]/[hex] - remove a color from a collection of current user
+//     > POST /[id]/colors - add color to collection of current user (DONE)
+//     > DELETE /[id]/colors/[hex] - remove a color from a collection of current user (DONE)
 //     > GET /[id] - get info on a collection by ID, of current user (DONE)
 //     > GET / - get all collections (DONE)
 //     > GET /users/[username] - get all collections by a user (DONE)
-//     > PATCH /[id] - rename a collection of current user
-//     > DELETE /[id] - delete a collection of current user
+//     > PATCH /[id] - rename a collection of current user (DONE)
+//     > DELETE /[id] - delete a collection of current user (DONE)
 
 // TODO: implement check that a collection with a given ID belongs to the current user (or user is
 // admin)
@@ -52,24 +52,55 @@ router.post("/", ensureLoggedIn, async (req, res, next) => {
 })
 
 
-/**
- * Add a color to a collection.
+/** POST /[id]/colors - add a color to a collection.
+ *
+ * Accepts data: {colorHex}, where colorHex is the hex representation for a new color.
+ *
+ * Returns: {collectionId, colorHex}.
+ *
+ * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
-router.post("/:id", ensureLoggedIn, async (req, res, next) => {
+router.post("/:id/colors", ensureLoggedIn, async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { id: collectionId } = req.params;
+        const {colorHex} = req.body;
+
+        // Check that user is the collection owner
+        // TODO: put this code in a helper function
+        const collection = await Collection.getSingle(collectionId);
+        const { username, isAdmin } = res.locals.user;
+        if (!isAdmin && collection.username !== username) {
+            throw new UnauthorizedError("Unauthorized: current user does not own this collection");
+        }
+
+        const addResult = await Collection.addColor({collectionId, colorHex});
+        return res.status(201).json(addResult);
     } catch(err) {
         return next(err);
     }
 })
 
 
-/**
- * Remove a color from a collection.
+/** DELETE /[id]/colors/[hex] - remove a color from a collection.
+ *
+ * Returns: {deleted: {collectionId, colorHex}}.
+ *
+ * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
-router.delete("/:id/:hex", ensureLoggedIn, async (req, res, next) => {
+router.delete("/:id/colors/:hex", ensureLoggedIn, async (req, res, next) => {
     try {
-        const { id, hex } = req.params;
+        const { id: collectionId, hex: colorHex } = req.params;
+
+        // Check that user is the collection owner
+        // TODO: put this code in a helper function
+        const collection = await Collection.getSingle(collectionId);
+        const { username, isAdmin } = res.locals.user;
+        if (!isAdmin && collection.username !== username) {
+            throw new UnauthorizedError("Unauthorized: current user does not own this collection");
+        }
+
+        const deleteRes = await Collection.removeColor({collectionId, colorHex});
+        return res.json(deleteRes);
     } catch(err) {
         return next(err);
     }
@@ -187,36 +218,6 @@ router.delete("/:id", ensureLoggedIn, async (req, res, next) => {
         return next(err);
     }
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 module.exports = router;
