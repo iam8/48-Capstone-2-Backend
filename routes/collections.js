@@ -19,8 +19,8 @@ const router = new express.Router();
 //     > POST /[id] - add color to collection of current user
 //     > DELETE /[id]/[hex] - remove a color from a collection of current user
 //     > GET /[id] - get info on a collection by ID, of current user (DONE)
-//     > GET / - get all collections
-//     > GET /users/[username] - get all collections by a user
+//     > GET / - get all collections (DONE)
+//     > GET /users/[username] - get all collections by a user (DONE)
 //     > PATCH /[id] - rename a collection of current user
 //     > DELETE /[id] - delete a collection of current user
 
@@ -76,7 +76,7 @@ router.delete("/:id/:hex", ensureLoggedIn, async (req, res, next) => {
 })
 
 
-/** GET /[id] - get info on a collection by the current user, by ID.
+/** GET /[id] - get info on a collection by ID.
  *
  * Returns: {collection: {id, title, username, colors}}.
  *
@@ -117,7 +117,7 @@ router.get("/", ensureAdmin, async (req, res, next) => {
 })
 
 
-/** GET /users/:username - get all collections by a user.
+/** GET /users/[username] - get all collections by a user.
  *
  * Returns: {collections: [id, title, username]}.
  *
@@ -134,24 +134,55 @@ router.get("/users/:username", ensureCorrectUserOrAdmin, async(req, res, next) =
 })
 
 
-/**
- * Rename a collection.
+/** PATCH /[id] - rename a collection by ID.
+ *
+ * Accepts data: {newTitle}.
+ *
+ * Returns: {updated: {id, title, username}}.
+ *
+ * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
 router.patch("/:id", ensureLoggedIn, async (req, res, next) => {
     try {
         const { id } = req.params;
+        const {newTitle} = req.body;
+
+        // Check that user is the collection owner
+        // TODO: put this code in a helper function
+        const collection = await Collection.getSingle(id);
+        const { username, isAdmin } = res.locals.user;
+        if (!isAdmin && collection.username !== username) {
+            throw new UnauthorizedError("Unauthorized: current user does not own this collection");
+        }
+
+        const updated = await Collection.rename({id, newTitle});
+        return res.json({updated});
     } catch(err) {
         return next(err);
     }
 })
 
 
-/**
- * Delete a collection.
+/** DELETE /[id] - delete a collection by ID.
+ *
+ * Returns: {deleted: {id}}.
+ *
+ * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
 router.delete("/:id", ensureLoggedIn, async (req, res, next) => {
     try {
         const { id } = req.params;
+
+        // Check that user is the collection owner
+        // TODO: put this code in a helper function
+        const collection = await Collection.getSingle(id);
+        const { username, isAdmin } = res.locals.user;
+        if (!isAdmin && collection.username !== username) {
+            throw new UnauthorizedError("Unauthorized: current user does not own this collection");
+        }
+
+        const deleteRes = await Collection.remove(id);
+        return res.json(deleteRes);
     } catch(err) {
         return next(err);
     }
