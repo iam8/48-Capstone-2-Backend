@@ -15,6 +15,8 @@ const {
     ensureAdminOrCollectionOwner
 } = require("../middleware/auth");
 
+const {BadRequestError} = require("../expressError");
+
 const router = new express.Router();
 
 
