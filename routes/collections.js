@@ -6,7 +6,6 @@
  */
 
 const express = require("express");
-const jsonschema = require("jsonschema");
 
 const Collection = require("../models/collection");
 const {
@@ -16,7 +15,7 @@ const {
     ensureAdminOrCollectionOwner
 } = require("../middleware/auth");
 
-const {BadRequestError} = require("../expressError");
+const { validateJson } = require("../helpers/jsonValidation");
 const collNewSchema = require("../schemas/collNewSchema.json");
 const collAddColorSchema = require("../schemas/collAddColorSchema.json");
 const collRenameSchema = require("../schemas/collRenameSchema.json");
@@ -34,11 +33,7 @@ const router = new express.Router();
  */
 router.post("/", ensureLoggedIn, async (req, res, next) => {
     try {
-        const validator = jsonschema.validate(req.body, collNewSchema);
-        if (!validator.valid) {
-            const errs = validator.errors.map(e => e.stack.replaceAll(`"`, `'`));
-            throw new BadRequestError(errs);
-        }
+        validateJson(req.body, userNewSchema);
 
         const { username } = res.locals.user;
         const { title } = req.body;
@@ -65,11 +60,7 @@ router.post(
     ensureAdminOrCollectionOwner,
     async (req, res, next) => {
         try {
-            const validator = jsonschema.validate(req.body, collAddColorSchema);
-            if (!validator.valid) {
-                const errs = validator.errors.map(e => e.stack.replaceAll(`"`, `'`));
-                throw new BadRequestError(errs);
-            }
+            validateJson(req.body, userNewSchema);
 
             const { id: collectionId } = req.params;
             const {colorHex} = req.body;
@@ -168,11 +159,7 @@ router.get("/users/:username", ensureCorrectUserOrAdmin, async(req, res, next) =
  */
 router.patch("/:id", ensureLoggedIn, ensureAdminOrCollectionOwner, async (req, res, next) => {
     try {
-        const validator = jsonschema.validate(req.body, collRenameSchema);
-        if (!validator.valid) {
-            const errs = validator.errors.map(e => e.stack.replaceAll(`"`, `'`));
-            throw new BadRequestError(errs);
-        }
+        validateJson(req.body, userNewSchema);
 
         const { id } = req.params;
         const {newTitle} = req.body;

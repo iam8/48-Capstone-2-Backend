@@ -6,11 +6,10 @@
  */
 
 const express = require("express");
-const jsonschema = require("jsonschema");
 
 const User = require("../models/user");
-const {BadRequestError} = require("../expressError");
 const { createToken } = require("../helpers/tokens");
+const { validateJson } = require("../helpers/jsonValidation");
 const authTokenSchema = require("../schemas/authTokenSchema.json");
 const authRegisterSchema = require("../schemas/authRegisterSchema.json");
 
@@ -25,11 +24,7 @@ const router = new express.Router();
  */
 router.post("/token", async function (req, res, next) {
     try {
-        const validator = jsonschema.validate(req.body, authTokenSchema);
-        if (!validator.valid) {
-            const errs = validator.errors.map(e => e.stack.replaceAll(`"`, `'`));
-            throw new BadRequestError(errs);
-        }
+        validateJson(req.body, authTokenSchema);
 
         const { username, password } = req.body;
         const user = await User.authenticate(username, password);
@@ -51,11 +46,7 @@ router.post("/token", async function (req, res, next) {
  */
 router.post("/register", async function (req, res, next) {
     try {
-        const validator = jsonschema.validate(req.body, authRegisterSchema);
-        if (!validator.valid) {
-            const errs = validator.errors.map(e => e.stack.replaceAll(`"`, `'`));
-            throw new BadRequestError(errs);
-        }
+        validateJson(req.body, authRegisterSchema);
 
         const newUser = await User.register({ ...req.body, isAdmin: false });
         const token = createToken(newUser);
