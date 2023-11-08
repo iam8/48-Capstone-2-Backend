@@ -174,8 +174,15 @@ class User {
             data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
         }
 
+        // Remove invalid fields in the data
+        const validFields = new Set(["firstName", "lastName", "password", "isAdmin"]);
+        let trimmedData = {...data};
+        for (let key of Object.keys(trimmedData)) {
+            if (!validFields.has(key)) delete trimmedData[key];
+        }
+
         const { setCols, values } = sqlForPartialUpdate(
-            data,
+            trimmedData,
             {
                 firstName: "first_name",
                 lastName: "last_name",
