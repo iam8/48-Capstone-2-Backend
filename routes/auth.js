@@ -27,7 +27,7 @@ router.post("/token", async function (req, res, next) {
     try {
         const validator = jsonschema.validate(req.body, authTokenSchema);
         if (!validator.valid) {
-            const errs = validator.errors.map(e => e.stack);
+            const errs = validator.errors.map(e => e.stack.replaceAll(`"`, `'`));
             throw new BadRequestError(errs);
         }
 
@@ -53,7 +53,7 @@ router.post("/register", async function (req, res, next) {
     try {
         const validator = jsonschema.validate(req.body, authRegisterSchema);
         if (!validator.valid) {
-            const errs = validator.errors.map(e => e.stack);
+            const errs = validator.errors.map(e => e.stack.replaceAll(`"`, `'`));
             throw new BadRequestError(errs);
         }
 

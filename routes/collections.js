@@ -36,7 +36,7 @@ router.post("/", ensureLoggedIn, async (req, res, next) => {
     try {
         const validator = jsonschema.validate(req.body, collNewSchema);
         if (!validator.valid) {
-            const errs = validator.errors.map(e => e.stack);
+            const errs = validator.errors.map(e => e.stack.replaceAll(`"`, `'`));
             throw new BadRequestError(errs);
         }
 
@@ -67,7 +67,7 @@ router.post(
         try {
             const validator = jsonschema.validate(req.body, collAddColorSchema);
             if (!validator.valid) {
-                const errs = validator.errors.map(e => e.stack);
+                const errs = validator.errors.map(e => e.stack.replaceAll(`"`, `'`));
                 throw new BadRequestError(errs);
             }
 
@@ -170,7 +170,7 @@ router.patch("/:id", ensureLoggedIn, ensureAdminOrCollectionOwner, async (req, r
     try {
         const validator = jsonschema.validate(req.body, collRenameSchema);
         if (!validator.valid) {
-            const errs = validator.errors.map(e => e.stack);
+            const errs = validator.errors.map(e => e.stack.replaceAll(`"`, `'`));
             throw new BadRequestError(errs);
         }
 

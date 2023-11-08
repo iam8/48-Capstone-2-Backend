@@ -36,7 +36,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
     try {
         const validator = jsonschema.validate(req.body, userNewSchema);
         if (!validator.valid) {
-            const errs = validator.errors.map(e => e.stack);
+            const errs = validator.errors.map(e => e.stack.replaceAll(`"`, `'`));
             throw new BadRequestError(errs);
         }
 
@@ -96,7 +96,7 @@ router.patch("/:username", ensureCorrectUserOrAdmin, async function (req, res, n
     try {
         const validator = jsonschema.validate(req.body, userUpdateSchema);
         if (!validator.valid) {
-            const errs = validator.errors.map(e => e.stack);
+            const errs = validator.errors.map(e => e.stack.replaceAll(`"`, `'`));
             throw new BadRequestError(errs);
         }
 
