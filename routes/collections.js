@@ -6,6 +6,7 @@
  */
 
 const express = require("express");
+const jsonschema = require("jsonschema");
 
 const Collection = require("../models/collection");
 const {
@@ -16,6 +17,9 @@ const {
 } = require("../middleware/auth");
 
 const {BadRequestError} = require("../expressError");
+const collNewSchema = require("../schemas/collNewSchema.json");
+const collAddColorSchema = require("../schemas/collAddColorSchema.json");
+const collRenameSchema = require("../schemas/collRenameSchema.json");
 
 const router = new express.Router();
 
@@ -30,6 +34,12 @@ const router = new express.Router();
  */
 router.post("/", ensureLoggedIn, async (req, res, next) => {
     try {
+        const validator = jsonschema.validate(req.body, collNewSchema);
+        if (!validator.valid) {
+            const errs = validator.errors.map(e => e.stack);
+            throw new BadRequestError(errs);
+        }
+
         const { username } = res.locals.user;
         const { title } = req.body;
 
@@ -43,7 +53,7 @@ router.post("/", ensureLoggedIn, async (req, res, next) => {
 
 /** POST /[id]/colors - add a color to a collection.
  *
- * Accepts data: {colorHex}, where colorHex is the hex representation for a new color.
+ * Accepts data: {colorHex}, where colorHex is the 6-character hex representation for a new color.
  *
  * Returns: {collectionId, colorHex}.
  *
@@ -55,6 +65,12 @@ router.post(
     ensureAdminOrCollectionOwner,
     async (req, res, next) => {
         try {
+            const validator = jsonschema.validate(req.body, collAddColorSchema);
+            if (!validator.valid) {
+                const errs = validator.errors.map(e => e.stack);
+                throw new BadRequestError(errs);
+            }
+
             const { id: collectionId } = req.params;
             const {colorHex} = req.body;
 
@@ -152,6 +168,12 @@ router.get("/users/:username", ensureCorrectUserOrAdmin, async(req, res, next) =
  */
 router.patch("/:id", ensureLoggedIn, ensureAdminOrCollectionOwner, async (req, res, next) => {
     try {
+        const validator = jsonschema.validate(req.body, collRenameSchema);
+        if (!validator.valid) {
+            const errs = validator.errors.map(e => e.stack);
+            throw new BadRequestError(errs);
+        }
+
         const { id } = req.params;
         const {newTitle} = req.body;
 
