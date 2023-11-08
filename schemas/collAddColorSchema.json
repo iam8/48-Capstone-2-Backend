@@ -1,0 +1,25 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "default": {},
+    "title": "Root Schema",
+    "required": [
+        "colorHex"
+    ],
+    "properties": {
+        "colorHex": {
+            "type": "string",
+            "default": "",
+            "title": "The colorHex Schema",
+            "minLength": "6",
+            "maxLength": "6",
+            "examples": [
+                "FFFFFF"
+            ]
+        }
+    },
+    "examples": [{
+        "colorHex": "FFFFFF"
+    }]
+}
