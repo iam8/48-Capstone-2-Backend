@@ -33,7 +33,7 @@ const router = new express.Router();
  */
 router.post("/", ensureLoggedIn, async (req, res, next) => {
     try {
-        validateJson(req.body, userNewSchema);
+        validateJson(req.body, collNewSchema);
 
         const { username } = res.locals.user;
         const { title } = req.body;
@@ -60,7 +60,7 @@ router.post(
     ensureAdminOrCollectionOwner,
     async (req, res, next) => {
         try {
-            validateJson(req.body, userNewSchema);
+            validateJson(req.body, collAddColorSchema);
 
             const { id: collectionId } = req.params;
             const {colorHex} = req.body;
@@ -159,7 +159,7 @@ router.get("/users/:username", ensureCorrectUserOrAdmin, async(req, res, next) =
  */
 router.patch("/:id", ensureLoggedIn, ensureAdminOrCollectionOwner, async (req, res, next) => {
     try {
-        validateJson(req.body, userNewSchema);
+        validateJson(req.body, collRenameSchema);
 
         const { id } = req.params;
         const {newTitle} = req.body;
