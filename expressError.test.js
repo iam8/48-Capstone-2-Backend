@@ -10,12 +10,21 @@ const {
     ForbiddenError} = require("./expressError");
 
 
-describe("ExpressError tests", () => {
-    const expressErr = new ExpressError("Custom error message", 501);
+const expressErr = new ExpressError("ExpressError msg", 100);
+const notFoundErr = new NotFoundError("NotFoundError msg", 200);
+const unauthErr = new UnauthorizedError("UnauthorizedError msg", 300);
+const badReqErr = new BadRequestError("BadRequestError msg", 400);
+const forbiddenErr = new ForbiddenError("ForbiddenError msg", 500);
 
-    test("Is an instance of base Error class", () => {
-        expect(expressErr).toBeInstanceOf(Error);
-    })
+const errTable = [[expressErr], [notFoundErr], [unauthErr], [badReqErr], [forbiddenErr]];
+
+describe("Instance classes and properties", () => {
+    test.each(errTable)(
+        "Test input %# is an instance of base Error class: %p",
+        (errObj) => {
+            expect(errObj).toBeInstanceOf(Error)
+        }
+    );
 })
 
 // describe("ExpressError tests", () => {
