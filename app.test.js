@@ -1,3 +1,6 @@
+
+/** Unit tests for main app file. */
+
 const request = require("supertest");
 
 const app = require("./app");
