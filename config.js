@@ -1,4 +1,3 @@
-"use strict";
 
 /** Shared config for application. */
 
