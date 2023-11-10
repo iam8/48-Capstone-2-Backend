@@ -1,3 +1,5 @@
+"use strict";
+
 
 /** Express app for Colors project. */
 
