@@ -1,3 +1,4 @@
+"use strict";
 
 /** Unit tests for main app file. */
 
