@@ -1,4 +1,5 @@
-"use strict";
+
+/** Unit tests for configuration file. */
 
 
 describe("Config can come from env (environment)", () => {
