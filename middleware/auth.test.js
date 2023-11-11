@@ -37,13 +37,31 @@ describe("Tests for authenticateJWT", () => {
         });
     });
 
-    // test("Works: no header", () => {
+    test("Works: no headers", () => {
+        expect.assertions(2);
 
-    // });
+        const req = {};
+        const res = {locals: {}};
+        const next = (err) => {
+            expect(err).toBeFalsy();
+        };
 
-    // test("Works: invalid token in header", () => {
+        authenticateJWT(req, res, next);
+        expect(res.locals).toEqual({});
+    });
 
-    // });
+    test("Works: invalid token in header", () => {
+        expect.assertions(2);
+
+        const req = {headers: {authorization: `Bearer ${badJwt}`}};
+        const res = {locals: {}};
+        const next = (err) => {
+            expect(err).toBeFalsy();
+        };
+
+        authenticateJWT(req, res, next);
+        expect(res.locals).toEqual({});
+    });
 });
 
 
