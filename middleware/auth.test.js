@@ -93,10 +93,10 @@ describe("Tests for ensureLoggedIn", () => {
 
 
 describe("Tests for ensureAdmin", () => {
-    test("", () => {
+    test("Works for admin", () => {
 
         const req = {};
-        const res = {locals: {user: {username: "testuser", isAdmin: false}}};
+        const res = {locals: {user: {username: "testadmin", isAdmin: true}}};
     });
 });
 
