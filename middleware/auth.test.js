@@ -65,9 +65,22 @@ describe("Tests for authenticateJWT", () => {
 });
 
 
-// describe("Tests for ensureLoggedIn", () => {
+describe("Tests for ensureLoggedIn", () => {
+    test("No error is thrown if user is logged in", () => {
+        expect.assertions(2);
 
-// })
+        const req = {headers: {authorization: `Bearer ${testJwt}`}};
+        const res = {locals: {user: {username: "testuser", isAdmin: false}}};
+        const next = (err) => {
+            expect(err).toBeFalsy();
+        };
+
+        const result = ensureLoggedIn(req, res, next);
+        expect(result).not.toBeDefined();
+    });
+
+
+});
 
 
 // describe("Tests for ensureAdmin", () => {
