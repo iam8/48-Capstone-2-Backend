@@ -69,7 +69,7 @@ describe("Tests for ensureLoggedIn", () => {
     test("Authorization if user is logged in (no error thrown)", () => {
         expect.assertions(1);
 
-        const req = {headers: {authorization: `Bearer ${testJwt}`}};
+        const req = {};
         const res = {locals: {user: {username: "testuser", isAdmin: false}}};
         const next = (err) => {
             expect(err).toBeFalsy();
@@ -92,9 +92,13 @@ describe("Tests for ensureLoggedIn", () => {
 });
 
 
-// describe("Tests for ensureAdmin", () => {
+describe("Tests for ensureAdmin", () => {
+    test("", () => {
 
-// })
+        const req = {};
+        const res = {locals: {user: {username: "testuser", isAdmin: false}}};
+    });
+});
 
 
 // describe("Tests for ensureCorrectUserOrAdmin", () => {
