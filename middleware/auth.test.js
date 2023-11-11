@@ -131,9 +131,72 @@ describe("Tests for ensureAdmin", () => {
 });
 
 
-// describe("Tests for ensureCorrectUserOrAdmin", () => {
+describe("Tests for ensureCorrectUserOrAdmin", () => {
+    test("Authorization if correct user and admin (no error thrown)", () => {
+        expect.assertions(1);
 
-// })
+        const req = {params: {username: "testadmin"}};
+        const res = {locals: {user: {username: "testadmin", isAdmin: true}}};
+        const next = (err) => {
+            expect(err).toBeFalsy();
+        };
+
+        ensureCorrectUserOrAdmin(req, res, next);
+    });
+
+    test("Authorization if incorrect user and admin (no error thrown)", () => {
+        expect.assertions(1);
+
+        const req = {params: {username: "testadmin1"}};
+        const res = {locals: {user: {username: "testadmin2", isAdmin: true}}};
+        const next = (err) => {
+            expect(err).toBeFalsy();
+        };
+
+        ensureCorrectUserOrAdmin(req, res, next);
+    });
+
+    test("Authorization if correct user and not admin (no error thrown)", () => {
+        expect.assertions(1);
+
+        const req = {params: {username: "testuser"}};
+        const res = {locals: {user: {username: "testuser", isAdmin: false}}};
+        const next = (err) => {
+            expect(err).toBeFalsy();
+        };
+
+        ensureCorrectUserOrAdmin(req, res, next);
+    });
+
+    test("Unauthorization if incorrect user and not admin (error thrown)", () => {
+        expect.assertions(1);
+
+        const req = {params: {username: "testuser1"}};
+        const res = {locals: {user: {username: "testuser2", isAdmin: false}}};
+        const next = (err) => {
+            expect(err).toBeInstanceOf(UnauthorizedError);
+        };
+
+        ensureCorrectUserOrAdmin(req, res, next);
+    });
+
+    test("Unauthorization if user is not logged in (error thrown)", () => {
+        expect.assertions(1);
+
+        const req = {params: {username: "testuser"}};
+        const res = {locals: {}};
+        const next = (err) => {
+            expect(err).toBeInstanceOf(UnauthorizedError);
+        };
+
+        ensureCorrectUserOrAdmin(req, res, next);
+    });
+});
+
+
+// describe("Tests for ensureAdminOrCollectionOwner", () => {
+
+// });
 
 
 afterAll(() => {
