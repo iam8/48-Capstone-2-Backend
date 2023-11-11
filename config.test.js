@@ -12,19 +12,19 @@ describe("Config can come from env (environment)", () => {
         process.env.NODE_ENV = "other";
 
         const config = require("./config");
-        expect(config.SECRET_KEY).toEqual("abcdefg");
-        expect(config.HOSTNAME).toEqual("0.0.0.0");
-        expect(config.PORT).toEqual(5000);
-        expect(config.getDatabaseUri()).toEqual("other");
-        expect(config.BCRYPT_WORK_FACTOR).toEqual(12);
+        expect(config.SECRET_KEY).toBe("abcdefg");
+        expect(config.HOSTNAME).toBe("0.0.0.0");
+        expect(config.PORT).toBe(5000);
+        expect(config.getDatabaseUri()).toBe("other");
+        expect(config.BCRYPT_WORK_FACTOR).toBe(12);
 
         delete process.env.SECRET_KEY;
         delete process.env.HOSTNAME;
         delete process.env.PORT;
         delete process.env.DATABASE_URL;
-        expect(config.getDatabaseUri()).toEqual("postgres:///colors");
+        expect(config.getDatabaseUri()).toBe("postgres:///colors");
 
         process.env.NODE_ENV = "test";
-        expect(config.getDatabaseUri()).toEqual("postgres:///colors_test");
+        expect(config.getDatabaseUri()).toBe("postgres:///colors_test");
     });
 })
