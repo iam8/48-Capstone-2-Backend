@@ -90,11 +90,11 @@ async function ensureAdminOrCollectionOwner(req, res, next) {
     try {
         const { id } = req.params;
         const collection = await Collection.getSingle(id);
-        const { username, isAdmin } = res.locals.user;
+        const user = res.locals.user;
 
-        if (!isAdmin && collection.username !== username) {
+        if (!(user && (user.isAdmin || collection.username === user.username))) {
             throw new UnauthorizedError("Unauthorized: current user does not own this collection");
-        }
+        };
 
         return next();
     } catch(err) {
