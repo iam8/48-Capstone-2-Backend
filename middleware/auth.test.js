@@ -93,10 +93,40 @@ describe("Tests for ensureLoggedIn", () => {
 
 
 describe("Tests for ensureAdmin", () => {
-    test("Works for admin", () => {
+    test("Authorization if admin (no error thrown)", () => {
+        expect.assertions(1);
 
         const req = {};
         const res = {locals: {user: {username: "testadmin", isAdmin: true}}};
+        const next = (err) => {
+            expect(err).toBeFalsy();
+        };
+
+        ensureAdmin(req, res, next);
+    });
+
+    test("Unauthorization if not admin (error thrown)", () => {
+        expect.assertions(1);
+
+        const req = {};
+        const res = {locals: {user: {username: "testuser", isAdmin: false}}};
+        const next = (err) => {
+            expect(err).toBeInstanceOf(UnauthorizedError);
+        };
+
+        ensureAdmin(req, res, next);
+    });
+
+    test("Unauthorization if user is not logged in (error thrown)", () => {
+        expect.assertions(1);
+
+        const req = {};
+        const res = {locals: {}};
+        const next = (err) => {
+            expect(err).toBeInstanceOf(UnauthorizedError);
+        };
+
+        ensureAdmin(req, res, next);
     });
 });
 
