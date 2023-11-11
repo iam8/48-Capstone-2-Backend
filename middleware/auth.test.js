@@ -18,6 +18,35 @@ const {SECRET_KEY} = require("../config");
 const testJwt = jwt.sign({username: "testuser", isAdmin: false}, SECRET_KEY);
 const badJwt = jwt.sign({username: "badtestuser", isAdmin: false}, "wrong-key");
 
+const testUsernames = [];
+const testCollIds = [];
+
+
+beforeAll(async () => {
+    await db.query("DELETE FROM users");
+
+    // Add test users
+    const resultUsers = await db.query(`
+        INSERT INTO users (username, password, first_name, last_name, is_admin)
+        VALUES
+            ('testuser', 'password1', 'FN1', 'LN1', false),
+            ('testadmin', 'password2', 'FN2', 'LN2', true)
+        RETURNING username`);
+
+    testUsernames.push(...resultUsers.rows.map(entry => entry.username));
+
+    // Add test collections
+    const resultColls = await db.query(`
+        INSERT INTO collections (title, creator_username)
+        VALUES
+            ('coll1', 'testuser'),
+            ('coll2', 'testadmin')
+        RETURNING id`);
+
+    testCollIds.push(...resultColls.rows.map(entry => entry.id));
+});
+
+
 
 describe("Tests for authenticateJWT", () => {
     test("Works: valid token in header", () => {
@@ -194,11 +223,38 @@ describe("Tests for ensureCorrectUserOrAdmin", () => {
 });
 
 
-// describe("Tests for ensureAdminOrCollectionOwner", () => {
+describe("Tests for ensureAdminOrCollectionOwner", () => {
+    // test("Authorization if user is admin and collection owner", async () => {
 
-// });
+    // });
+
+    // test("Authorization if user is admin and not collection owner", async () => {
+
+    // });
+
+    // test("Authorization if user is not admin and is collection owner", async () => {
+
+    // });
+
+    // test("Unauthorization if user is not admin and not collection owner", async () => {
+
+    // });
+
+    test("Unauthorization if user is not logged in", async () => {
+        expect.assertions(1);
+
+        const req = {params: {id: testCollIds[0]}};
+        const res = {locals: {}};
+        const next = (err) => {
+            expect(err).toBeInstanceOf(UnauthorizedError);
+        };
+
+        await ensureAdminOrCollectionOwner(req, res, next);
+    });
+});
 
 
-afterAll(() => {
-    db.end();
+afterAll(async () => {
+    await db.query("DELETE FROM users");
+    await db.end();
 });
