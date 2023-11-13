@@ -224,21 +224,51 @@ describe("Tests for ensureCorrectUserOrAdmin", () => {
 
 
 describe("Tests for ensureAdminOrCollectionOwner", () => {
-    // test("Authorization if user is admin and collection owner", async () => {
+    test("Authorization if user is admin and collection owner", async () => {
+        expect.assertions(1);
 
-    // });
+        const req = {params: {id: testCollIds[1]}};
+        const res = {locals: {user: {username: testUsernames[1], isAdmin: true}}};
+        const next = (err) => {
+            expect(err).toBeFalsy();
+        };
 
-    // test("Authorization if user is admin and not collection owner", async () => {
+        await ensureAdminOrCollectionOwner(req, res, next);
+    });
 
-    // });
+    test("Authorization if user is admin and not collection owner", async () => {
+        const req = {params: {id: testCollIds[1]}};
+        const res = {locals: {user: {username: testUsernames[0], isAdmin: true}}};
+        const next = (err) => {
+            expect(err).toBeFalsy();
+        };
 
-    // test("Authorization if user is not admin and is collection owner", async () => {
+        await ensureAdminOrCollectionOwner(req, res, next);
+    });
 
-    // });
+    test("Authorization if user is not admin and is collection owner", async () => {
+        expect.assertions(1);
 
-    // test("Unauthorization if user is not admin and not collection owner", async () => {
+        const req = {params: {id: testCollIds[0]}};
+        const res = {locals: {user: {username: testUsernames[0], isAdmin: false}}};
+        const next = (err) => {
+            expect(err).toBeFalsy();
+        };
 
-    // });
+        await ensureAdminOrCollectionOwner(req, res, next);
+    });
+
+    test("Unauthorization if user is not admin and not collection owner", async () => {
+        expect.assertions(1);
+
+        const req = {params: {id: testCollIds[1]}};
+        const res = {locals: {user: {username: testUsernames[0], isAdmin: false}}};
+        const next = (err) => {
+            expect(err).toBeInstanceOf(UnauthorizedError);
+        };
+
+        await ensureAdminOrCollectionOwner(req, res, next);
+    });
 
     test("Unauthorization if user is not logged in", async () => {
         expect.assertions(1);
