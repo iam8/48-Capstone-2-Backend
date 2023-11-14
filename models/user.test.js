@@ -224,7 +224,7 @@ describe("update()", () => {
 
     })
 
-    test("No effect if no update data is included", async () => {
+    test("Throws BadRequestError if no update data is included", async () => {
 
     })
 
