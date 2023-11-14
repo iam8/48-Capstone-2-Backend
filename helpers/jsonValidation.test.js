@@ -4,7 +4,7 @@ jest.mock("jsonschema");
 
 const {validate} = require("jsonschema");
 const {validateJson} = require("./jsonValidation");
-// const {BadRequestError} = require("../expressError");
+const {BadRequestError} = require("../expressError");
 
 
 describe("Tests for validateJson", () => {
@@ -24,7 +24,7 @@ describe("Tests for validateJson", () => {
     });
 
     test("Throws BadRequestError with appropriate error list on validation failure", () => {
-        expect.assertions(1);
+        expect.assertions(2);
 
         const errors = [{stack: 'Error1'}, {stack: 'Error2'}];
         validate.mockReturnValue({valid: false, errors});
@@ -32,6 +32,7 @@ describe("Tests for validateJson", () => {
         try {
             validateJson("Request Body", "Schema");
         } catch(err) {
+            expect(err).toBeInstanceOf(BadRequestError);
             expect(err.message).toEqual(["Error1", "Error2"]);
         }
     });
