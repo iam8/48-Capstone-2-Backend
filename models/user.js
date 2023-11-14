@@ -117,7 +117,7 @@ class User {
      * Given a username, return data about user.
      *
      * Returns { username, firstName, lastName, isAdmin, collections }
-     *   where collections is { id, title }.
+     *   where collections is [{ id, title }, ...].
      *
      * Throws NotFoundError if user not found.
      **/
