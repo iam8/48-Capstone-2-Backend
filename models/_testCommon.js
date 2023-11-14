@@ -2,11 +2,6 @@ const bcrypt = require("bcrypt");
 
 const db = require("../colors-db.js");
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
-const {
-    NotFoundError,
-    BadRequestError,
-    UnauthorizedError,
-} = require("../expressError");
 
 const usernames = [];
 const collIds = [];
