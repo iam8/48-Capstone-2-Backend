@@ -61,7 +61,7 @@ describe("authenticate()", () => {
 
 
 // Tests for register() ---------------------------------------------------------------------------
-describe("Tests for register()", () => {
+describe("register()", () => {
     test("Returns correct user data and adds correct user data to database", async () => {
         const newUser = {
             username: "newUser",
@@ -127,7 +127,38 @@ describe("Tests for register()", () => {
 
 
 // Tests for findAll() ----------------------------------------------------------------------------
+describe("findAll()", () => {
+    test("Successfully returns all user data", async () => {
+        const result = await User.findAll();
+        expect(result).toEqual([
+            {
+                username: "u1",
+                firstName: "FN1",
+                lastName: "LN1",
+                isAdmin: true
+            },
+            {
+                username: "u2",
+                firstName: "FN2",
+                lastName: "LN2",
+                isAdmin: false
+            },
+            {
+                username: "u3",
+                firstName: "FN3",
+                lastName: "LN3",
+                isAdmin: false
+            }
+        ]);
+    })
 
+    test("Returns empty array if no users exist", async () => {
+        await db.query(`DELETE FROM users`);
+
+        const result = await User.findAll();
+        expect(result).toEqual([]);
+    })
+})
 
 //-------------------------------------------------------------------------------------------------
 
