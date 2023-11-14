@@ -61,7 +61,33 @@ describe("authenticate()", () => {
 
 
 // Tests for register() ---------------------------------------------------------------------------
+describe("Tests for register()", () => {
+    test("Returns correct user data and adds correct user data to database", async () => {
+        const newAdmin = {
+            username: "newAdmin",
+            firstName: "ADMINFIRST",
+            lastName: "ADMINLAST",
+            isAdmin: true
+        };
 
+        const regResult = await User.register({...newAdmin, password: "newPassword"});
+        expect(regResult).toEqual(newAdmin);
+
+        const dbResult = await db.query(`SELECT * FROM users WHERE username = 'newAdmin'`);
+        const dbUser = dbResult.rows[0];
+        expect(dbResult.rows).toHaveLength(1);
+        expect(dbUser.password.startsWith("$2b$")).toBe(true);
+        expect(dbUser.is_admin).toBe(true);
+    })
+
+    // test("New user defaults to non-admin", async () => {
+
+    // })
+
+    // test("Throws BadRequestError on duplicate username", async () => {
+
+    // })
+})
 
 //-------------------------------------------------------------------------------------------------
 
