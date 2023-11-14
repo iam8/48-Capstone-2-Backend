@@ -25,7 +25,6 @@ async function commonBeforeAll() {
         ]);
 
     usernames.push(...userRes.rows.map(entry => entry.username));
-    console.log("USERNAME LIST:", usernames);
 
     // ADD COLLECTIONS DATA
     const collRes = await db.query(`
@@ -44,7 +43,6 @@ async function commonBeforeAll() {
         ]);
 
         collIds.push(...collRes.rows.map(entry => entry.id));
-        console.log("COLLECTIONS ID LIST:", collIds);
 
     // ADD COLORS TO COLLECTIONS
     await db.query(`
