@@ -215,7 +215,23 @@ describe("get()", () => {
 
 
 // Tests for update() -----------------------------------------------------------------------------
+describe("update()", () => {
+    test("Successfully performs full update of an existing user", async () => {
 
+    })
+
+    test("Successfully performs partial update of an existing user", async () => {
+
+    })
+
+    test("No effect if no update data is included", async () => {
+
+    })
+
+    test("Throws NotFoundError for a nonexistent user", async () => {
+
+    })
+})
 
 //-------------------------------------------------------------------------------------------------
 
