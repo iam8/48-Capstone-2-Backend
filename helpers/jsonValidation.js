@@ -1,8 +1,7 @@
-"use strict";
 
 /** Helpers for JSON validation. */
 
-const jsonschema = require("jsonschema");
+const {validate} = require("jsonschema");
 const {BadRequestError} = require("../expressError");
 
 
@@ -16,7 +15,7 @@ const {BadRequestError} = require("../expressError");
  * Otherwise, returns undefined.
  */
 function validateJson(reqBody, schema) {
-    const validator = jsonschema.validate(reqBody, schema);
+    const validator = validate(reqBody, schema);
     if (!validator.valid) {
         const errs = validator.errors.map(e => e.stack.replaceAll(`"`, `'`));
         throw new BadRequestError(errs);
