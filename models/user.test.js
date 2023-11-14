@@ -164,7 +164,52 @@ describe("findAll()", () => {
 
 
 // Tests for get() --------------------------------------------------------------------------------
+describe("get()", () => {
+    test("Gets appropriate data on existing user with associated collections", async () => {
+        const result = await User.get(usernames[0]);
+        expect(result).toEqual({
+            username: usernames[0],
+            firstName: "FN1",
+            lastName: "LN1",
+            isAdmin: true,
+            collections: [
+                {
+                    id: collIds[0],
+                    title: "coll-u1-1"
+                },
+                {
+                    id: collIds[1],
+                    title: "coll-u1-2"
+                },
+                {
+                    id: collIds[2],
+                    title: "coll-u1-3"
+                }
+            ]
+        });
+    })
 
+    test("Gets appropriate data on existing user with no associated collections", async () => {
+        const result = await User.get(usernames[2]);
+        expect(result).toEqual({
+            username: usernames[2],
+            firstName: "FN3",
+            lastName: "LN3",
+            isAdmin: false,
+            collections: []
+        });
+    })
+
+    test("Throws NotFoundError for nonexistent user", async () => {
+        expect.assertions(1);
+
+        try {
+            await User.get("nonexistent");
+        } catch(err) {
+            expect(err).toBeInstanceOf(NotFoundError);
+        }
+    })
+})
 
 //-------------------------------------------------------------------------------------------------
 
