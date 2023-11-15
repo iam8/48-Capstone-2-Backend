@@ -217,19 +217,84 @@ describe("get()", () => {
 // Tests for update() -----------------------------------------------------------------------------
 describe("update()", () => {
     test("Successfully performs full update of an existing user", async () => {
+        const data = {
+            firstName: "newFN1",
+            lastName: "newLN1",
+            password: "newPassword1",
+            isAdmin: false
+        };
 
+        const upResult = await User.update(usernames[0], data);
+        expect(upResult).toEqual({
+            username: usernames[0],
+            firstName: "newFN1",
+            lastName: "newLN1",
+            isAdmin: false
+        });
+
+        const dbResult = await db.query(`
+            SELECT * FROM users WHERE username = $1`,
+            [usernames[0]]);
+
+        const dbUser = dbResult.rows[0];
+        expect(dbUser).toEqual({
+            username: usernames[0],
+            password: expect.any(String),
+            first_name: "newFN1",
+            last_name: "newLN1",
+            is_admin: false
+        });
+
+        expect(dbUser.password.startsWith("$2b$")).toBe(true);
     })
 
     test("Successfully performs partial update of an existing user", async () => {
+        const data = {
+            firstName: "newFN1",
+        };
 
+        const upResult = await User.update(usernames[0], data);
+        expect(upResult).toEqual({
+            username: usernames[0],
+            firstName: "newFN1",
+            lastName: "LN1",
+            isAdmin: true
+        });
+
+        const dbResult = await db.query(`
+            SELECT * FROM users WHERE username = $1`,
+            [usernames[0]]);
+
+        const dbUser = dbResult.rows[0];
+        expect(dbUser).toEqual({
+            username: usernames[0],
+            password: expect.any(String),
+            first_name: "newFN1",
+            last_name: "LN1",
+            is_admin: true
+        });
+
+        expect(dbUser.password.startsWith("$2b$")).toBe(true);
     })
 
     test("Throws BadRequestError if no update data is included", async () => {
+        expect.assertions(1);
 
+        try {
+            await User.update(usernames[0], {});
+        } catch(err) {
+            expect(err).toBeInstanceOf(BadRequestError);
+        }
     })
 
     test("Throws NotFoundError for a nonexistent user", async () => {
+        expect.assertions(1);
 
+        try {
+            await User.update("nonexistent", {isAdmin: true});
+        } catch(err) {
+            expect(err).toBeInstanceOf(NotFoundError);
+        }
     })
 })
 
