@@ -302,6 +302,26 @@ describe("update()", () => {
 
 
 // Tests for remove() -----------------------------------------------------------------------------
+describe("remove()", () => {
+    test("Successfully removes user from database", async () => {
+        await User.remove(usernames[0]);
 
+        const dbResult = await db.query(`
+            SELECT * FROM users WHERE username = $1`,
+            [usernames[0]]);
+
+        expect(dbResult.rows).toHaveLength(0);
+    })
+
+    test("Throws NotFoundError for a nonexistent user", async () => {
+        expect.assertions(1);
+
+        try {
+            await User.remove("nonexistent");
+        } catch(err) {
+            expect(err).toBeInstanceOf(NotFoundError);
+        }
+    })
+})
 
 //-------------------------------------------------------------------------------------------------
