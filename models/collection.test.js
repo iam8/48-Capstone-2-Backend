@@ -135,7 +135,40 @@ describe("getAllByUser()", () => {
 
 
 // Tests for getAll() -----------------------------------------------------------------------------
+describe("getAll()", () => {
+    test("Returns list of data on all collections", async () => {
+        const result = await Collection.getAll();
+        expect(result).toEqual([
+            {
+                id: expect.any(Number),
+                title: "coll-u1-1",
+                username: "u1"
+            },
+            {
+                id: expect.any(Number),
+                title: "coll-u1-2",
+                username: "u1"
+            },
+            {
+                id: expect.any(Number),
+                title: "coll-u1-3",
+                username: "u1"
+            },
+            {
+                id: expect.any(Number),
+                title: "coll-u2-1",
+                username: "u2"
+            }
+        ]);
+    })
 
+    test("Returns empty list if no collections", async () => {
+        await db.query(`DELETE FROM collections`);
+
+        const result = await Collection.getAll();
+        expect(result).toEqual([]);
+    })
+})
 //-------------------------------------------------------------------------------------------------
 
 
