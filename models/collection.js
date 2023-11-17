@@ -152,6 +152,8 @@ class Collection {
      * Returns: {collectionId, colorHex}
      *
      * Throws NotFoundError if no collection with the given ID exists.
+     *
+     * Throws BadRequestError if the given color already exists in the collection.
      */
     static async addColor({collectionId, colorHex}) {
 
