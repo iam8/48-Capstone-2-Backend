@@ -173,7 +173,63 @@ describe("getAll()", () => {
 
 
 // Tests for rename() -----------------------------------------------------------------------------
+describe("rename()", () => {
+    test("Successfully renames a given collection and returns correct data", async () => {
+        const rnRes = await Collection.rename({id: collIds[0], newTitle: "NewTitle"});
+        expect(rnRes).toEqual({
+            id: collIds[0],
+            title: "NewTitle",
+            username: "u1"
+        });
 
+        const dbRes = await db.query(`
+            SELECT * FROM collections WHERE id = $1`,
+            [collIds[0]]
+        );
+
+        expect(dbRes.rows[0]).toEqual({
+            id: collIds[0],
+            title: "NewTitle",
+            creator_username: "u1"
+        });
+    })
+
+    test("Does not modify other collection fields", async () => {
+        const rnRes = await Collection.rename({
+            id: collIds[0],
+            newTitle: "NewTitle",
+            username: "u3",
+            extraProp: true
+        });
+
+        expect(rnRes).toEqual({
+            id: collIds[0],
+            title: "NewTitle",
+            username: "u1"
+        });
+
+        const dbRes = await db.query(`
+            SELECT * FROM collections WHERE id = $1`,
+            [collIds[0]]
+        );
+
+        expect(dbRes.rows[0]).toEqual({
+            id: collIds[0],
+            title: "NewTitle",
+            creator_username: "u1"
+        });
+    })
+
+    test("Throws NotFoundError for a nonexistent collection", async () => {
+        expect.assertions(1);
+
+        try {
+            await Collection.rename({id: 0, newTitle: "NewTitle"});
+        } catch(err) {
+            expect(err).toBeInstanceOf(NotFoundError);
+        }
+    })
+})
 //-------------------------------------------------------------------------------------------------
 
 
