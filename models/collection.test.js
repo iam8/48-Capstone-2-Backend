@@ -94,7 +94,43 @@ describe("getSingle()", () => {
 
 
 // Tests for getAllByUser() -----------------------------------------------------------------------
+describe("getAllByUser()", () => {
+    test("Returns data on all collections by a user that has collections", async () => {
+        const result = await Collection.getAllByUser(usernames[0]);
+        expect(result).toEqual([
+            {
+                id: expect.any(Number),
+                title: "coll-u1-1",
+                username: usernames[0]
+            },
+            {
+                id: expect.any(Number),
+                title: "coll-u1-2",
+                username: usernames[0]
+            },
+            {
+                id: expect.any(Number),
+                title: "coll-u1-3",
+                username: usernames[0]
+            }
+        ]);
+    })
 
+    test("Returns empty list for a user that has no collections", async () => {
+        const result = await Collection.getAllByUser(usernames[2]);
+        expect(result).toEqual([]);
+    })
+
+    test("Throws NotFoundError for a nonexistent user", async () => {
+        expect.assertions(1);
+
+        try {
+            await Collection.getAllByUser("nonexistent");
+        } catch(err) {
+            expect(err).toBeInstanceOf(NotFoundError);
+        }
+    })
+})
 //-------------------------------------------------------------------------------------------------
 
 
