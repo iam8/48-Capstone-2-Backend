@@ -80,9 +80,15 @@ describe("getSingle()", () => {
         });
     })
 
-    // test("Throws NotFoundError for a nonexistent collection", async () => {
+    test("Throws NotFoundError for a nonexistent collection", async () => {
+        expect.assertions(1);
 
-    // })
+        try {
+            await Collection.getSingle(0);
+        } catch(err) {
+            expect(err).toBeInstanceOf(NotFoundError);
+        }
+    })
 })
 //-------------------------------------------------------------------------------------------------
 
