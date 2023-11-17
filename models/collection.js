@@ -107,7 +107,7 @@ class Collection {
     /**
      * Get list of data on every collection.
      *
-     * Returns: {id, title, username}
+     * Returns: [{id, title, username}, ...]
      */
     static async getAll() {
         const result = await db.query(`
