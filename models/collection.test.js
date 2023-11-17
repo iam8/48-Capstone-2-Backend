@@ -234,7 +234,48 @@ describe("rename()", () => {
 
 
 // Tests for addColor() ---------------------------------------------------------------------------
+describe("addColor()", () => {
+    test("Successfully adds a new color to a collection and returns correct data", async () => {
+        const addRes = await Collection.addColor({collectionId: collIds[0], colorHex: "ffffff"});
+        expect(addRes).toEqual({
+            collectionId: collIds[0],
+            colorHex: "ffffff"
+        });
 
+        const dbRes = await db.query(`
+            SELECT id, color_hex FROM collections
+            JOIN collections_colors
+                ON collections.id = collections_colors.collection_id
+            WHERE collections.id = $1`,
+            [collIds[0]]);
+
+        console.log("DB RES:", dbRes.rows);
+        const idRes = dbRes.rows[0].id;
+        const colors = dbRes.rows.map(entry => entry.color_hex);
+
+        expect(idRes).toBe(collIds[0]);
+        expect(colors).toEqual([
+            "000000",
+            "111111",
+            "222222",
+            "ffffff"
+        ]);
+    })
+
+    test("Throws NotFoundError for a nonexistent collection", async () => {
+        expect.assertions(1);
+
+        try {
+            await Collection.addColor({collectionId: 0, colorHex: "ffffff"});
+        } catch(err) {
+            expect(err).toBeInstanceOf(NotFoundError);
+        }
+    })
+
+    // test("Throws BadRequestError if color already exists in collection", async () => {
+
+    // })
+})
 //-------------------------------------------------------------------------------------------------
 
 
