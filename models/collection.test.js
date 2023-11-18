@@ -296,7 +296,43 @@ describe("addColor()", () => {
 
 
 // Tests for removeColor() ------------------------------------------------------------------------
+describe("removeColor()", () => {
+    test("Successfully removes color from collection and returns correct data", async () => {
+        const toRemove = {collectionId: collIds[0], colorHex: "000000"};
 
+        const rmRes = await Collection.removeColor(toRemove);
+        expect(rmRes).toEqual({"deleted": toRemove});
+
+        const dbRes = await db.query(`
+            SELECT color_hex FROM collections
+            JOIN collections_colors
+                ON collections.id = collections_colors.collection_id
+            WHERE collections.id = $1
+            AND color_hex = $2`,
+            [toRemove.collectionId, toRemove.colorHex]
+        );
+
+        expect(dbRes.rows).toHaveLength(0);
+    })
+
+    test("Throws NotFoundError for nonexistent collection-color associations", async () => {
+        expect.assertions(3);
+
+        const toRemove = [
+            {collectionId: 0, colorHex: "000000"},
+            {collectionId: collIds[0], colorHex: "abcdef"},
+            {collectionId: 0, colorHex: "abcdef"}
+        ];
+
+        for (let data of toRemove) {
+            try {
+                await Collection.removeColor(data);
+            } catch(err) {
+                expect(err).toBeInstanceOf(NotFoundError);
+            }
+        }
+    })
+})
 //-------------------------------------------------------------------------------------------------
 
 
