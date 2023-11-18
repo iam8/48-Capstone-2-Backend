@@ -175,33 +175,7 @@ describe("getAll()", () => {
 // Tests for rename() -----------------------------------------------------------------------------
 describe("rename()", () => {
     test("Successfully renames a given collection and returns correct data", async () => {
-        const rnRes = await Collection.rename({id: collIds[0], newTitle: "NewTitle"});
-        expect(rnRes).toEqual({
-            id: collIds[0],
-            title: "NewTitle",
-            username: "u1"
-        });
-
-        const dbRes = await db.query(`
-            SELECT * FROM collections WHERE id = $1`,
-            [collIds[0]]
-        );
-
-        expect(dbRes.rows[0]).toEqual({
-            id: collIds[0],
-            title: "NewTitle",
-            creator_username: "u1"
-        });
-    })
-
-    test("Does not modify other collection fields", async () => {
-        const rnRes = await Collection.rename({
-            id: collIds[0],
-            newTitle: "NewTitle",
-            username: "u3",
-            extraProp: true
-        });
-
+        const rnRes = await Collection.rename(collIds[0], "NewTitle");
         expect(rnRes).toEqual({
             id: collIds[0],
             title: "NewTitle",
@@ -224,7 +198,7 @@ describe("rename()", () => {
         expect.assertions(1);
 
         try {
-            await Collection.rename({id: 0, newTitle: "NewTitle"});
+            await Collection.rename(0, "NewTitle");
         } catch(err) {
             expect(err).toBeInstanceOf(NotFoundError);
         }
@@ -236,9 +210,9 @@ describe("rename()", () => {
 // Tests for addColor() ---------------------------------------------------------------------------
 describe("addColor()", () => {
     test("Successfully adds a new color to a collection and returns correct data", async () => {
-        const addRes = await Collection.addColor({collectionId: collIds[0], colorHex: "ffffff"});
+        const addRes = await Collection.addColor(collIds[0], "ffffff");
         expect(addRes).toEqual({
-            collectionId: collIds[0],
+            id: collIds[0],
             colorHex: "ffffff"
         });
 
@@ -265,7 +239,7 @@ describe("addColor()", () => {
         expect.assertions(1);
 
         try {
-            await Collection.addColor({collectionId: 0, colorHex: "ffffff"});
+            await Collection.addColor(0, "ffffff");
         } catch(err) {
             expect(err).toBeInstanceOf(NotFoundError);
         }
@@ -275,7 +249,7 @@ describe("addColor()", () => {
         expect.assertions(2);
 
         try {
-            await Collection.addColor({collectionId: collIds[0], colorHex: "000000"});
+            await Collection.addColor(collIds[0], "000000");
         } catch(err) {
             expect(err).toBeInstanceOf(BadRequestError);
         }
@@ -298,9 +272,9 @@ describe("addColor()", () => {
 // Tests for removeColor() ------------------------------------------------------------------------
 describe("removeColor()", () => {
     test("Successfully removes color from collection and returns correct data", async () => {
-        const toRemove = {collectionId: collIds[0], colorHex: "000000"};
+        const toRemove = {id: collIds[0], colorHex: "000000"};
 
-        const rmRes = await Collection.removeColor(toRemove);
+        const rmRes = await Collection.removeColor(toRemove.id, toRemove.colorHex);
         expect(rmRes).toEqual({"deleted": toRemove});
 
         const dbRes = await db.query(`
@@ -309,7 +283,7 @@ describe("removeColor()", () => {
                 ON collections.id = collections_colors.collection_id
             WHERE collections.id = $1
             AND color_hex = $2`,
-            [toRemove.collectionId, toRemove.colorHex]
+            [toRemove.id, toRemove.colorHex]
         );
 
         expect(dbRes.rows).toHaveLength(0);
@@ -319,14 +293,14 @@ describe("removeColor()", () => {
         expect.assertions(3);
 
         const toRemove = [
-            {collectionId: 0, colorHex: "000000"},
-            {collectionId: collIds[0], colorHex: "abcdef"},
-            {collectionId: 0, colorHex: "abcdef"}
+            {id: 0, colorHex: "000000"},
+            {id: collIds[0], colorHex: "abcdef"},
+            {id: 0, colorHex: "abcdef"}
         ];
 
         for (let data of toRemove) {
             try {
-                await Collection.removeColor(data);
+                await Collection.removeColor(data.id, data.colorHex);
             } catch(err) {
                 expect(err).toBeInstanceOf(NotFoundError);
             }
