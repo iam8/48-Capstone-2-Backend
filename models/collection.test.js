@@ -272,9 +272,15 @@ describe("addColor()", () => {
         }
     })
 
-    // test("Throws BadRequestError if color already exists in collection", async () => {
+    test("Throws BadRequestError if color already exists in collection", async () => {
+        expect.assertions(1);
 
-    // })
+        try {
+            await Collection.addColor({collectionId: collIds[0], colorHex: "000000"});
+        } catch(err) {
+            expect(err).toBeInstanceOf(BadRequestError);
+        }
+    })
 })
 //-------------------------------------------------------------------------------------------------
 
