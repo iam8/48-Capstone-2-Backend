@@ -10,11 +10,11 @@ class Collection {
     /**
      * Create a color collection, update database, and return new collection data.
      *
-     * Accepts data: {title, username}
+     * Accepts data: `{title, username}`.
      *
-     * Returns: {id, title, username}
+     * Returns: `{id, title, username}`.
      *
-     * Throws NotFoundError if user not found.
+     * Throws `NotFoundError` if user not found.
      */
     static async create({title, username}) {
 
@@ -45,10 +45,10 @@ class Collection {
     /**
      * Get all data on a single collection by ID.
      *
-     * Returns: {id, title, username, colors}, where colors is a list of color hex values in this
-     *  collection.
+     * Returns: `{id, title, username, colors}`, where `colors` is a list of color hex values in
+     * this collection.
      *
-     * Throws NotFoundError if no collection with the given ID exists.
+     * Throws `NotFoundError` if no collection with the given ID exists.
      */
     static async getSingle(id) {
         const result = await db.query(`
@@ -77,9 +77,9 @@ class Collection {
     /**
      * Get list of data on every collection by a given user (by username).
      *
-     * Returns: [{id, title, username}, ...]
+     * Returns: `[{id, title, username}, ...]`.
      *
-     * Throws NotFoundError if user is not found.
+     * Throws `NotFoundError` if user is not found.
      */
     static async getAllByUser(username) {
 
@@ -105,9 +105,9 @@ class Collection {
     }
 
     /**
-     * Get list of data on every collection.
+     * Get list of data on all collections.
      *
-     * Returns: [{id, title, username}, ...]
+     * Returns: `[{id, title, username}, ...]`.
      */
     static async getAll() {
         const result = await db.query(`
@@ -123,9 +123,9 @@ class Collection {
      *
      * Accepts a collection ID and a new collection title.
      *
-     * Returns: {id, title, username}, where title is the updated title.
+     * Returns: `{id, title, username}`, where `title` is the updated title.
      *
-     * Throws NotFoundError if no collection with the given ID exists.
+     * Throws `NotFoundError` if no collection with the given ID exists.
      */
     static async rename(id, newTitle) {
         const result = await db.query(`
@@ -148,11 +148,11 @@ class Collection {
      *
      * Accepts a collection ID and a 6-digit hex representation of a color.
      *
-     * Returns: {id, colorHex}
+     * Returns: `{id, colorHex}`.
      *
-     * Throws NotFoundError if no collection with the given ID exists.
+     * Throws `NotFoundError` if no collection with the given ID exists.
      *
-     * Throws BadRequestError if the given color already exists in the collection.
+     * Throws `BadRequestError` if the given color already exists in the collection.
      */
     static async addColor(id, colorHex) {
 
@@ -198,9 +198,9 @@ class Collection {
      *
      * Accepts a collection ID and a 6-digit hex representation of a color.
      *
-     * Returns: {deleted: {id, colorHex}}
+     * Returns: `{deleted: {id, colorHex}}`.
      *
-     * Throws NotFoundError if the given collection-color association doesn't exist.
+     * Throws `NotFoundError` if the given collection-color association doesn't exist.
      */
     static async removeColor(id, colorHex) {
 
@@ -223,9 +223,9 @@ class Collection {
     /**
      * Remove a collection by ID.
      *
-     * Returns: {deleted: {id}}
+     * Returns: `{deleted: {id}}`.
      *
-     * Throws NotFoundError if no collection with the given ID exists.
+     * Throws `NotFoundError` if no collection with the given ID exists.
      */
     static async remove(id) {
         const result = await db.query(`
