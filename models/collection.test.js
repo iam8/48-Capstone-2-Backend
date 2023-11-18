@@ -337,5 +337,27 @@ describe("removeColor()", () => {
 
 
 // Tests for remove() -----------------------------------------------------------------------------
+describe("remove()", () => {
+    test("Successfully removes collection and returns correct data", async () => {
+        const rmRes = await Collection.remove(collIds[0]);
+        expect(rmRes).toEqual({
+            deleted: {
+                id: collIds[0]
+            }
+        });
 
+        const dbRes = await db.query(`SELECT * FROM collections WHERE id = $1`, [collIds[0]]);
+        expect(dbRes.rows).toHaveLength(0);
+    })
+
+    test("Throws NotFoundError for a nonexistent collection", async () => {
+        expect.assertions(1);
+
+        try {
+            await Collection.remove(0);
+        } catch(err) {
+            expect(err).toBeInstanceOf(NotFoundError);
+        }
+    })
+})
 //-------------------------------------------------------------------------------------------------
