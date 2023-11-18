@@ -121,13 +121,13 @@ class Collection {
     /**
      * Rename a given collection.
      *
-     * Accepts data: {id, newTitle}
+     * Accepts a collection ID and a new collection title.
      *
      * Returns: {id, title, username}, where title is the updated title.
      *
      * Throws NotFoundError if no collection with the given ID exists.
      */
-    static async rename({id, newTitle}) {
+    static async rename(id, newTitle) {
         const result = await db.query(`
             UPDATE collections
             SET title = $1
@@ -146,26 +146,25 @@ class Collection {
     /**
      * Add a new color to a collection.
      *
-     * Accepts data: {collectionId, colorHex}, where colorHex is a 6-digit hex representation of a
-     *  color.
+     * Accepts a collection ID and a 6-digit hex representation of a color.
      *
-     * Returns: {collectionId, colorHex}
+     * Returns: {id, colorHex}
      *
      * Throws NotFoundError if no collection with the given ID exists.
      *
      * Throws BadRequestError if the given color already exists in the collection.
      */
-    static async addColor({collectionId, colorHex}) {
+    static async addColor(id, colorHex) {
 
         // Check that collection exists
         const collRes = await db.query(`
             SELECT id FROM collections
             WHERE id = $1`,
-            [collectionId]
+            [id]
         );
 
         if (!collRes.rows[0]) {
-            throw new NotFoundError(`No collection: ${collectionId}`);
+            throw new NotFoundError(`No collection: ${id}`);
         }
 
         // Check that color doesn't exist in collection
@@ -174,7 +173,7 @@ class Collection {
                 FROM collections_colors
                 WHERE collection_id = $1
                 AND color_hex = $2`,
-            [collectionId, colorHex],
+            [id, colorHex],
         );
 
         if (duplicateCheck.rows[0]) {
@@ -187,8 +186,8 @@ class Collection {
                 (collection_id, color_hex)
             VALUES
                 ($1, $2)
-            RETURNING collection_id AS "collectionId", color_hex AS "colorHex"`,
-            [collectionId, colorHex]
+            RETURNING collection_id AS "id", color_hex AS "colorHex"`,
+            [id, colorHex]
         );
 
         return result.rows[0];
@@ -197,29 +196,28 @@ class Collection {
     /**
      * Remove a color from a collection.
      *
-     * Accepts data: {collectionId, colorHex}, where colorHex is a 6-digit hex representation of a
-     *  color.
+     * Accepts a collection ID and a 6-digit hex representation of a color.
      *
-     * Returns: {deleted: {collectionId, colorHex}}
+     * Returns: {deleted: {id, colorHex}}
      *
      * Throws NotFoundError if the given collection-color association doesn't exist.
      */
-    static async removeColor({collectionId, colorHex}) {
+    static async removeColor(id, colorHex) {
 
         const result = await db.query(`
             DELETE FROM collections_colors
             WHERE collection_id = $1
             AND color_hex = $2
-            RETURNING collection_id AS "collectionId", color_hex AS "colorHex"`,
-            [collectionId, colorHex]
+            RETURNING collection_id AS "id", color_hex AS "colorHex"`,
+            [id, colorHex]
         );
 
         if (!result.rows[0]) {
             throw new NotFoundError(
-                `No collection with ID of ${collectionId} and color ${colorHex}`);
+                `No collection with ID of ${id} and color ${colorHex}`);
         }
 
-        return {"deleted": {collectionId, colorHex}};
+        return {"deleted": {id, colorHex}};
     }
 
     /**
