@@ -249,7 +249,6 @@ describe("addColor()", () => {
             WHERE collections.id = $1`,
             [collIds[0]]);
 
-        console.log("DB RES:", dbRes.rows);
         const idRes = dbRes.rows[0].id;
         const colors = dbRes.rows.map(entry => entry.color_hex);
 
@@ -273,13 +272,24 @@ describe("addColor()", () => {
     })
 
     test("Throws BadRequestError if color already exists in collection", async () => {
-        expect.assertions(1);
+        expect.assertions(2);
 
         try {
             await Collection.addColor({collectionId: collIds[0], colorHex: "000000"});
         } catch(err) {
             expect(err).toBeInstanceOf(BadRequestError);
         }
+
+        const dbRes = await db.query(`
+            SELECT color_hex FROM collections
+            JOIN collections_colors
+                ON collections.id = collections_colors.collection_id
+            WHERE collections.id = $1
+            AND color_hex = $2`,
+            [collIds[0], "000000"]
+        );
+
+        expect(dbRes.rows).toHaveLength(1);
     })
 })
 //-------------------------------------------------------------------------------------------------
