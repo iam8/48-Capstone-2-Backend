@@ -19,9 +19,9 @@ class User {
     /**
      * Authenticate user with username, password.
      *
-     * Returns { username, firstName, lastName, isAdmin }.
+     * Returns `{ username, firstName, lastName, isAdmin }`.
      *
-     * Throws UnauthorizedError is user not found or password is wrong.
+     * Throws `UnauthorizedError` is user not found or password is wrong.
      **/
     static async authenticate(username, password) {
         // Try to find the user first
@@ -51,11 +51,11 @@ class User {
     }
 
     /**
-     * Register user with data: { username, password, firstName, lastName, isAdmin }.
+     * Register user with data: `{ username, password, firstName, lastName, isAdmin }`.
      *
-     * Returns { username, firstName, lastName, isAdmin }.
+     * Returns `{ username, firstName, lastName, isAdmin }`.
      *
-     * Throws BadRequestError on duplicate usernames.
+     * Throws `BadRequestError` on duplicate usernames.
      **/
     static async register({ username, password, firstName, lastName, isAdmin }) {
         const duplicateCheck = await db.query(
@@ -78,8 +78,8 @@ class User {
                 first_name,
                 last_name,
                 is_admin)
-                VALUES ($1, $2, $3, $4, $5)
-                RETURNING username, first_name AS "firstName", last_name AS "lastName",
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING username, first_name AS "firstName", last_name AS "lastName",
                 is_admin AS "isAdmin"`,
             [
                 username,
@@ -95,9 +95,9 @@ class User {
     }
 
     /**
-     * Find all users.
+     * Find all users, sorted by username (ascending).
      *
-     * Returns [{ username, firstName, lastName, isAdmin }, ...].
+     * Returns `[{ username, firstName, lastName, isAdmin }, ...]`.
      **/
     static async findAll() {
         const result = await db.query(
@@ -116,10 +116,10 @@ class User {
     /**
      * Given a username, return data about user.
      *
-     * Returns { username, firstName, lastName, isAdmin, collections }
-     *   where collections is [{ id, title }, ...].
+     * Returns `{ username, firstName, lastName, isAdmin, collections }`,
+     *  where `collections` is `[{ id, title }, ...]`.
      *
-     * Throws NotFoundError if user not found.
+     * Throws `NotFoundError` if user not found.
      **/
     static async get(username) {
         const userRes = await db.query(
@@ -158,12 +158,12 @@ class User {
      * This is a "partial update" --- it's fine if data doesn't contain
      * all the fields; this only changes provided ones.
      *
-     * Data can include:
-     *   { firstName, lastName, password, isAdmin }
+     * `data` can include:
+     *   `{ firstName, lastName, password, isAdmin }`.
      *
-     * Returns { username, firstName, lastName, isAdmin }.
+     * Returns updated fields: `{ username, firstName, lastName, isAdmin }`.
      *
-     * Throws NotFoundError if not found.
+     * Throws `NotFoundError` if user is not found.
      *
      * WARNING: this function can set a new password or make a user an admin.
      * Callers of this function must be certain they have validated inputs to this
@@ -210,9 +210,9 @@ class User {
     /**
      * Delete given user (by username) from database.
      *
-     * Returns undefined.
+     * Returns `undefined`.
      *
-     * Throws NotFoundError if user not found.
+     * Throws `NotFoundError` if user not found.
      */
     static async remove(username) {
         let result = await db.query(
