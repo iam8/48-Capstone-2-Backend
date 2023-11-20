@@ -6,11 +6,14 @@ const {NotFoundError, BadRequestError} = require("../expressError");
 
 const {
     commonBeforeAll,
+    commonBeforeAllAlt,
     commonBeforeEach,
     commonAfterEach,
     commonAfterAll,
     usernames,
-    collIds
+    collIds,
+    userData,
+    passwords
 } = require("./_testCommon");
 
 
