@@ -24,6 +24,8 @@ afterAll(commonAfterAll);
 
 // Tests for POST /auth/token ---------------------------------------------------------------------
 describe("POST /auth/token", () => {
+    const url = "/auth/token";
+
     test("Returns correct JSON for valid username + password", async () => {
         const resp = await request(app)
             .post("/auth/token")
@@ -84,5 +86,38 @@ describe("POST /auth/token", () => {
 
 
 // Tests for POST /auth/register ------------------------------------------------------------------
+describe("POST /auth/register", () => {
+    const url = "/auth/register";
 
+    test("Returns correct data for valid non-admin user", async () => {
+        const data = {
+            username: "non-admin",
+            password: "password",
+            firstName: "NonAdminFN",
+            lastName: "NonAdminLN"
+        };
+
+        const resp = await request(app).post(url).send(data);
+        expect(resp.statusCode).toBe(201);
+        expect(resp.body).toEqual({
+            token: expect.any(String)
+        });
+    })
+
+    // test("Returns correct data for valid admin user", async () => {
+
+    // })
+
+    // test("Bad request (code 400) for duplicate user", async () => {
+
+    // })
+
+    // test("Bad request (code 400) for missing request data", async () => {
+
+    // })
+
+    // test("Bad request (code 400) for invalid request data types", async () => {
+
+    // })
+})
 //-------------------------------------------------------------------------------------------------
