@@ -103,24 +103,6 @@ describe("getAllByUser()", () => {
         }
 
         expect(result).toEqual(expected);
-
-        // expect(result).toEqual([
-        //     {
-        //         id: expect.any(Number),
-        //         title: "coll-u1-1",
-        //         username: usernames[0]
-        //     },
-        //     {
-        //         id: expect.any(Number),
-        //         title: "coll-u1-2",
-        //         username: usernames[0]
-        //     },
-        //     {
-        //         id: expect.any(Number),
-        //         title: "coll-u1-3",
-        //         username: usernames[0]
-        //     }
-        // ]);
     })
 
     test("Returns empty list for a user that has no collections", async () => {
@@ -145,12 +127,6 @@ describe("getAllByUser()", () => {
 describe("getAll()", () => {
     test("Returns list of data on all collections", async () => {
         const result = await Collection.getAll();
-
-        // const expected = userData.map(user => {
-        //     const colls = user.collections;
-        //     return colls;
-        // });
-
         const expected = [];
 
         userData.forEach((user) => {
@@ -161,28 +137,6 @@ describe("getAll()", () => {
         });
 
         expect(result).toEqual(expected);
-        // expect(result).toEqual([
-        //     {
-        //         id: expect.any(Number),
-        //         title: "coll-u1-1",
-        //         username: "u1"
-        //     },
-        //     {
-        //         id: expect.any(Number),
-        //         title: "coll-u1-2",
-        //         username: "u1"
-        //     },
-        //     {
-        //         id: expect.any(Number),
-        //         title: "coll-u1-3",
-        //         username: "u1"
-        //     },
-        //     {
-        //         id: expect.any(Number),
-        //         title: "coll-u2-1",
-        //         username: "u2"
-        //     }
-        // ]);
     })
 
     test("Returns empty list if no collections", async () => {
@@ -259,12 +213,6 @@ describe("addColor()", () => {
 
         expect(idRes).toBe(coll.id);
         expect(colorsRes).toEqual([...origColors, newColor]);
-        // expect(colorsRes).toEqual([
-        //     "000000",
-        //     "111111",
-        //     "222222",
-        //     "ffffff"
-        // ]);
     })
 
     test("Throws NotFoundError for a nonexistent collection", async () => {
