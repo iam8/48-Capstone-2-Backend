@@ -156,9 +156,8 @@ async function commonBeforeAllAlt() {
         colorRes.rows[5].colorHex
     );
 
-    // console.log("USER DATA STRUCTURE:", userData);
-    // console.log("USER 0 COLLECTIONS:", userData[0].collections);
-    // console.log("USER 1 COLLECTIONS:", userData[1].collections);
+    console.log("TEST DATA OBJECT:");
+    console.dir(userData, {depth: null});
 }
 
 
