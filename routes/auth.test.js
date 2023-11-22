@@ -89,12 +89,12 @@ describe("POST /auth/token", () => {
 describe("POST /auth/register", () => {
     const url = "/auth/register";
 
-    test("Returns correct data for valid non-admin user", async () => {
+    test("Returns correct data for valid user", async () => {
         const data = {
-            username: "non-admin",
+            username: "newUser",
             password: "password",
-            firstName: "NonAdminFN",
-            lastName: "NonAdminLN"
+            firstName: "First",
+            lastName: "Last"
         };
 
         const resp = await request(app).post(url).send(data);
@@ -104,24 +104,17 @@ describe("POST /auth/register", () => {
         });
     })
 
-    test("Returns correct data for valid admin user", async () => {
+    test("Bad request (code 400) for duplicate user", async () => {
         const data = {
-            username: "ADMIN",
+            username: userData[0].username,
             password: "password",
-            firstName: "AdminFN",
-            lastName: "NonAdminLN"
+            firstName: "first",
+            lastName: "last"
         };
 
-        const resp = await request(app).post(url).send(data);
-        expect(resp.statusCode).toBe(201);
-        expect(resp.body).toEqual({
-            token: expect.any(String)
-        });
+        const resp = await request(url).post(url).send(data);
+        expect(resp.statusCode).toBe(400);
     })
-
-    // test("Bad request (code 400) for duplicate user", async () => {
-
-    // })
 
     // test("Bad request (code 400) for missing request data", async () => {
 
