@@ -28,7 +28,7 @@ describe("POST /auth/token", () => {
 
     test("Returns correct JSON for valid username + password", async () => {
         const resp = await request(app)
-            .post("/auth/token")
+            .post(url)
             .send({
                 username: userData[0].username,
                 password: passwords[0]
@@ -41,7 +41,7 @@ describe("POST /auth/token", () => {
 
     test("Unauthorization (code 401) for nonexistent username", async () => {
         const resp = await request(app)
-            .post("/auth/token")
+            .post(url)
             .send({
                 username: "nonexistent",
                 password: passwords[0]
@@ -52,7 +52,7 @@ describe("POST /auth/token", () => {
 
     test("Unauthorization (code 401) for wrong password", async () => {
         const resp = await request(app)
-            .post("/auth/token")
+            .post(url)
             .send({
                 username: userData[0].username,
                 password: "wrong-password"
@@ -63,7 +63,7 @@ describe("POST /auth/token", () => {
 
     test("Bad request (code 400) for missing request data", async () => {
         const resp = await request(app)
-            .post("/auth/token")
+            .post(url)
             .send({
                 username: userData[0].username
             });
@@ -73,7 +73,7 @@ describe("POST /auth/token", () => {
 
     test("Bad request (code 400) for invalid request data types", async () => {
         const resp = await request(app)
-            .post("/auth/token")
+            .post(url)
             .send({
                 username: 13,
                 password: true
@@ -104,9 +104,20 @@ describe("POST /auth/register", () => {
         });
     })
 
-    // test("Returns correct data for valid admin user", async () => {
+    test("Returns correct data for valid admin user", async () => {
+        const data = {
+            username: "ADMIN",
+            password: "password",
+            firstName: "AdminFN",
+            lastName: "NonAdminLN"
+        };
 
-    // })
+        const resp = await request(app).post(url).send(data);
+        expect(resp.statusCode).toBe(201);
+        expect(resp.body).toEqual({
+            token: expect.any(String)
+        });
+    })
 
     // test("Bad request (code 400) for duplicate user", async () => {
 
