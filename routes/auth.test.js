@@ -27,58 +27,53 @@ describe("POST /auth/token", () => {
     const url = "/auth/token";
 
     test("Returns correct JSON for valid username + password", async () => {
-        const resp = await request(app)
-            .post(url)
-            .send({
-                username: userData[0].username,
-                password: passwords[0]
-            });
+        const data = {
+            username: userData[0].username,
+            password: passwords[0]
+        };
 
+        const resp = await request(app).post(url).send(data);
         expect(resp.body).toEqual({
             token: expect.any(String)
         });
     })
 
     test("Unauthorization (code 401) for nonexistent username", async () => {
-        const resp = await request(app)
-            .post(url)
-            .send({
-                username: "nonexistent",
-                password: passwords[0]
-            });
+        const data = {
+            username: "nonexistent",
+            password: passwords[0]
+        };
 
+        const resp = await request(app).post(url).send(data);
         expect(resp.statusCode).toBe(401);
     })
 
     test("Unauthorization (code 401) for wrong password", async () => {
-        const resp = await request(app)
-            .post(url)
-            .send({
-                username: userData[0].username,
-                password: "wrong-password"
-            });
+        const data = {
+            username: userData[0].username,
+            password: "wrong-password"
+        };
 
+        const resp = await request(app).post(url).send(data);
         expect(resp.statusCode).toBe(401);
     })
 
     test("Bad request (code 400) for missing request data", async () => {
-        const resp = await request(app)
-            .post(url)
-            .send({
-                username: userData[0].username
-            });
+        const data = {
+            username: userData[0].username
+        };
 
+        const resp = await request(app).post(url).send(data);
         expect(resp.statusCode).toBe(400);
     })
 
     test("Bad request (code 400) for invalid request data types", async () => {
-        const resp = await request(app)
-            .post(url)
-            .send({
-                username: 13,
-                password: true
-            });
+        const data = {
+            username: 13,
+            password: true
+        };
 
+        const resp = await request(app).post(url).send(data);
         expect(resp.statusCode).toBe(400);
     })
 })
