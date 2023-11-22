@@ -112,16 +112,30 @@ describe("POST /auth/register", () => {
             lastName: "last"
         };
 
-        const resp = await request(url).post(url).send(data);
+        const resp = await request(app).post(url).send(data);
         expect(resp.statusCode).toBe(400);
     })
 
-    // test("Bad request (code 400) for missing request data", async () => {
+    test("Bad request (code 400) for missing request data", async () => {
+        const data = {
+            username: "newUser",
+            password: "password"
+        };
 
-    // })
+        const resp = await request(app).post(url).send(data);
+        expect(resp.statusCode).toBe(400);
+    })
 
-    // test("Bad request (code 400) for invalid request data types", async () => {
+    test("Bad request (code 400) for invalid request data types", async () => {
+        const data = {
+            username: 13,
+            password: true,
+            firstName: false,
+            lastName: "Ok data type"
+        };
 
-    // })
+        const resp = await request(app).post(url).send(data);
+        expect(resp.statusCode).toBe(400);
+    })
 })
 //-------------------------------------------------------------------------------------------------
