@@ -4,13 +4,10 @@ const request = require("supertest");
 
 const app = require("../app");
 const {
-    // commonBeforeAll,
     commonBeforeAllAlt,
     commonBeforeEach,
     commonAfterEach,
     commonAfterAll,
-    // usernames,
-    // collIds,
     userData,
     passwords
 } = require("./_testCommon");
