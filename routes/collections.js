@@ -25,9 +25,9 @@ const router = new express.Router();
 
 /** POST / - create new collection for the current user.
  *
- * Accepts data: { title }, where 'title' is the name of the new collection.
+ * Accepts data: `{ title }`, where `title` is the name of the new collection.
  *
- * Returns: {collection: {id, title, username}} for the created collection.
+ * Returns: `{collection: {id, title, username}}` for the created collection.
  *
  * Authorization required: logged in
  */
@@ -48,9 +48,10 @@ router.post("/", ensureLoggedIn, async (req, res, next) => {
 
 /** POST /[id]/colors - add a color to a collection.
  *
- * Accepts data: {colorHex}, where colorHex is the 6-character hex representation for a new color.
+ * Accepts data: `{colorHex}`, where `colorHex` is the 6-character hex representation for a new
+ * color.
  *
- * Returns: {collectionId, colorHex}.
+ * Returns: `{collectionId, colorHex}`.
  *
  * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
@@ -76,7 +77,7 @@ router.post(
 
 /** DELETE /[id]/colors/[hex] - remove a color from a collection.
  *
- * Returns: {deleted: {collectionId, colorHex}}.
+ * Returns: `{deleted: {collectionId, colorHex}}`.
  *
  * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
@@ -99,7 +100,7 @@ router.delete(
 
 /** GET /[id] - get info on a collection by ID.
  *
- * Returns: {collection: {id, title, username, colors}}.
+ * Returns: `{collection: {id, title, username, colors}}`.
  *
  * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
@@ -117,7 +118,7 @@ router.get("/:id", ensureLoggedIn, ensureAdminOrCollectionOwner, async (req, res
 
 /** GET / - get all collections.
  *
- * Returns: {collections: [{id, title, username}]}.
+ * Returns: `{collections: [{id, title, username}, ...]}`.
  *
  * Authorization required: admin
  */
@@ -133,7 +134,7 @@ router.get("/", ensureAdmin, async (req, res, next) => {
 
 /** GET /users/[username] - get all collections by a user.
  *
- * Returns: {collections: [id, title, username]}.
+ * Returns: `{collections: [id, title, username]}`.
  *
  * Authorization required: admin or corresponding user (to given username)
  */
@@ -151,9 +152,9 @@ router.get("/users/:username", ensureCorrectUserOrAdmin, async(req, res, next) =
 
 /** PATCH /[id] - rename a collection by ID.
  *
- * Accepts data: {newTitle}.
+ * Accepts data: `{newTitle}`.
  *
- * Returns: {updated: {id, title, username}}.
+ * Returns: `{updated: {id, title, username}}`.
  *
  * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
@@ -174,7 +175,7 @@ router.patch("/:id", ensureLoggedIn, ensureAdminOrCollectionOwner, async (req, r
 
 /** DELETE /[id] - delete a collection by ID.
  *
- * Returns: {deleted: {id}}.
+ * Returns: `{deleted: {id}}`.
  *
  * Authorization required: logged in, and current user must be owner of the collection or an admin.
  */
