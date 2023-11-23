@@ -197,8 +197,6 @@ module.exports = {
     commonBeforeEach,
     commonAfterEach,
     commonAfterAll,
-    usernames,
-    collIds,
     userData,
     passwords,
     tokens
