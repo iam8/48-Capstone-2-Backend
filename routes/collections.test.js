@@ -105,37 +105,101 @@ describe("POST /collections", () => {
 describe("POST /collections/[id]/colors", () => {
     const urlTemp = "/collections/%d/colors";
 
-    // test("Returns correct data for logged-in admin", async () => {
+    test("Returns correct data for logged-in admin", async () => {
+        const id = userData[1].collections[0].id;
+        const colorHex = "123456";
+        const url = util.format(urlTemp, id);
 
-    // })
+        const resp = await request(app)
+            .post(url)
+            .send({colorHex})
+            .set("authorization", `Bearer ${tokens[0]}`);
 
-    // test("Returns correct data for non-admin, collection owner", async () => {
+        expect(resp.statusCode).toBe(201);
+        expect(resp.body).toEqual({
+            collectionId: id,
+            colorHex
+        });
+    })
 
-    // })
+    test("Returns correct data for non-admin collection owner", async () => {
+        const id = userData[1].collections[0].id;
+        const colorHex = "123456";
+        const url = util.format(urlTemp, id);
 
-    // test("Unauthorized (code 400) for logged-in, non-owner of collection", async () => {
+        const resp = await request(app)
+            .post(url)
+            .send({colorHex})
+            .set("authorization", `Bearer ${tokens[1]}`);
 
-    // })
+        expect(resp.statusCode).toBe(201);
+        expect(resp.body).toEqual({
+            collectionId: id,
+            colorHex
+        });
+    })
 
-    // test("Unauthorized (code 401) for logged-out user", async () => {
+    test("Unauthorized (code 401) for logged-in, non-owner of collection", async () => {
+        const id = userData[0].collections[0].id;
+        const colorHex = "123456";
+        const url = util.format(urlTemp, id);
 
-    // })
+        const resp = await request(app)
+            .post(url)
+            .send({colorHex})
+            .set("authorization", `Bearer ${tokens[2]}`);
 
-    // test("Not found (code 404) for nonexistent collection ID", async () => {
+        expect(resp.statusCode).toBe(401);
+    })
 
-    // })
+    test("Unauthorized (code 401) for logged-out user", async () => {
+        const id = userData[0].collections[0].id;
+        const colorHex = "123456";
+        const url = util.format(urlTemp, id);
 
-    // test("Bad request (code 400) for duplicate color", async () => {
+        const resp = await request(app)
+            .post(url)
+            .send({colorHex});
 
-    // })
+        expect(resp.statusCode).toBe(401);
+    })
 
-    // test("Bad request (code 400) for missing or invalid request data", async () => {
-    //     const badData = ["123", "1234567", true];
-    // })
+    test("Not found (code 404) for nonexistent collection ID", async () => {
+        const id = 0;
+        const colorHex = "123456";
+        const url = util.format(urlTemp, id);
 
-    // test("Bad request (code 400) for missing request data", async () => {
+        const resp = await request(app)
+            .post(url)
+            .send({colorHex});
 
-    // })
+        expect(resp.statusCode).toBe(401);
+    })
+
+    test("Bad request (code 400) for duplicate color", async () => {
+        const coll = userData[0].collections[0];
+        const colorHex = coll.colors[0];
+        const url = util.format(urlTemp, coll.id);
+
+        const resp = await request(app)
+            .post(url)
+            .send({colorHex})
+            .set("authorization", `Bearer ${tokens[0]}`);;
+
+        expect(resp.statusCode).toBe(400);
+    })
+
+    test("Bad request (code 400) for missing request data", async () => {
+        const id = userData[0].collections[0].id;
+        const url = util.format(urlTemp, id);
+
+        const resp = await request(app)
+            .post(url)
+            .send({})
+            .set("authorization", `Bearer ${tokens[0]}`);;
+
+        expect(resp.statusCode).toBe(400);
+    })
 
     test.each(
         ["123", "1234567", true]
