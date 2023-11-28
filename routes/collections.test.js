@@ -10,7 +10,6 @@ const {
     commonAfterEach,
     commonAfterAll,
     userData,
-    passwords,
     tokens
 } = require("./_testCommon");
 
@@ -22,7 +21,7 @@ afterAll(commonAfterAll);
 
 
 // Tests for POST /collections --------------------------------------------------------------------
-describe("POST /collections", () => {
+describe("POST /collections - add new collection for current user", () => {
     const url = "/collections";
 
     test("Returns correct data for logged-in, non-admin", async () => {
@@ -102,7 +101,7 @@ describe("POST /collections", () => {
 
 
 // Tests for POST /collections/[id]/colors --------------------------------------------------------
-describe("POST /collections/[id]/colors", () => {
+describe("POST /collections/[id]/colors - add new color to given collection", () => {
     const urlTemp = "/collections/%d/colors";
 
     test("Returns correct data for logged-in admin", async () => {
@@ -221,7 +220,7 @@ describe("POST /collections/[id]/colors", () => {
 
 
 // Tests for DELETE /collections/[id]/colors/[hex] ------------------------------------------------
-// describe("DELETE /collections/[id]/colors/[hex]", () => {
+// describe("DELETE /collections/[id]/colors/[hex] - remove given color from given collection", () => {
 //     const urlTemp = "/collections/%d/colors/%s";
 
 //     test("Returns correct data for logged-in admin", async () => {
@@ -248,7 +247,7 @@ describe("POST /collections/[id]/colors", () => {
 
 
 // Tests for GET /collections/[id] ----------------------------------------------------------------
-// describe("GET /collections/[id]", () => {
+// describe("GET /collections/[id] - get data on a single given collection", () => {
 //     const urlTemp = "/collections/%d";
 
 //     test("Returns correct data for logged-in admin", async () => {
@@ -275,7 +274,7 @@ describe("POST /collections/[id]/colors", () => {
 
 
 // Tests for GET /collections ---------------------------------------------------------------------
-// describe("GET /collections", () => {
+// describe("GET /collections - get data on all collections", () => {
 //     test("Returns correct data for logged-in admin", async () => {
 
 //     })
@@ -296,7 +295,7 @@ describe("POST /collections/[id]/colors", () => {
 
 
 // Tests for GET /collections/users/[username] ----------------------------------------------------
-// describe("GET /collections/users/[username]", () => {
+// describe("GET /collections/users/[username] - get collection data for a given user", () => {
 //     const urlTemp = "/collections/users/%s";
 
 //     test("Returns correct data for logged-in admin", async () => {
@@ -327,7 +326,7 @@ describe("POST /collections/[id]/colors", () => {
 
 
 // Tests for PATCH /collections/[id] --------------------------------------------------------------
-// describe("PATCH /collections/[id]", () => {
+// describe("PATCH /collections/[id] - update a given collection", () => {
 //     const urlTemp = "/collections/%d";
 
 //     test("Returns correct data for logged-in admin", async () => {
@@ -362,7 +361,7 @@ describe("POST /collections/[id]/colors", () => {
 
 
 // Tests for DELETE /collections/[id] -------------------------------------------------------------
-// describe("DELETE /collections/[id]", () => {
+// describe("DELETE /collections/[id] - delete a given collection", () => {
 //     const urlTemp = "/collections/%d";
 
 //     test("Returns correct data for admin", async () => {
