@@ -1,6 +1,7 @@
 "use strict";
 
 const request = require("supertest");
+const util = require('node:util');
 
 const app = require("../app");
 const {
@@ -101,7 +102,44 @@ describe("POST /collections", () => {
 
 
 // Tests for POST /collections/[id]/colors --------------------------------------------------------
+describe("POST /collections/[id]/colors", () => {
+    const urlTemp = "/collections/%d/colors";
 
+    // test("Returns correct data for logged-in admin", async () => {
+
+    // })
+
+    // test("Returns correct data for corresponding user (owner of collection)", async () => {
+
+    // })
+
+    // test("Unauthorized (code 401) for logged-out user", async () => {
+
+    // })
+
+    // test("Not found (code 404) for nonexistent collection ID", async () => {
+
+    // })
+
+    // test("Bad request (code 400) for missing or invalid request data", async () => {
+    //     const badData = ["123", "1234567", true];
+    // })
+
+    test.each(
+        ["123", "1234567", true]
+    )("Bad request (code 400) for invalid hex input: %s", async (badHex) => {
+        const id = userData[0].collections[0].id;
+        const url = util.format(urlTemp, id);
+
+        const resp = await request(app)
+            .post(url)
+            .send({colorHex: badHex})
+            .set("authorization", `Bearer ${tokens[0]}`);
+
+        expect(resp.statusCode).toBe(400);
+    })
+
+})
 //-------------------------------------------------------------------------------------------------
 
 
