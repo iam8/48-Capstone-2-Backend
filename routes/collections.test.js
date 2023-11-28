@@ -113,6 +113,10 @@ describe("POST /collections/[id]/colors", () => {
 
     // })
 
+    // test("Unauthorized (code 400) for logged-in, non-owner of collection", async () => {
+
+    // })
+
     // test("Unauthorized (code 401) for logged-out user", async () => {
 
     // })
@@ -127,6 +131,10 @@ describe("POST /collections/[id]/colors", () => {
 
     // test("Bad request (code 400) for missing or invalid request data", async () => {
     //     const badData = ["123", "1234567", true];
+    // })
+
+    // test("Bad request (code 400) for missing request data", async () => {
+
     // })
 
     test.each(
@@ -144,7 +152,6 @@ describe("POST /collections/[id]/colors", () => {
 
         expect(resp.statusCode).toBe(400);
     })
-
 })
 //-------------------------------------------------------------------------------------------------
 
@@ -158,6 +165,10 @@ describe("POST /collections/[id]/colors", () => {
 //     })
 
 //     test("Returns correct data for non-admin, collection owner", async () => {
+
+//     })
+
+//     test("Unauthorized (code 400) for logged-in, non-owner of collection", async () => {
 
 //     })
 
@@ -184,6 +195,10 @@ describe("POST /collections/[id]/colors", () => {
 
 //     })
 
+//     test("Unauthorized (code 400) for logged-in, non-owner of collection", async () => {
+
+//     })
+
 //     test("Unauthorized (code 401) for logged-out user", async () => {
 
 //     })
@@ -197,7 +212,7 @@ describe("POST /collections/[id]/colors", () => {
 
 // Tests for GET /collections ---------------------------------------------------------------------
 // describe("GET /collections", () => {
-//     test("Returns correct data on all collections", async () => {
+//     test("Returns correct data for logged-in admin", async () => {
 
 //     })
 
@@ -219,6 +234,30 @@ describe("POST /collections/[id]/colors", () => {
 // Tests for GET /collections/users/[username] ----------------------------------------------------
 // describe("GET /collections/users/[username]", () => {
 //     const urlTemp = "/collections/users/%s";
+
+//     test("Returns correct data for logged-in admin", async () => {
+
+//     })
+
+//     test("Returns correct data for non-admin, corresponding user", async () => {
+
+//     })
+
+//     test("Unauthorized (code 400) for logged-in, non-owner of collection", async () => {
+
+//     })
+
+//     test("Unauthorized (code 400) for logged-out user", async () => {
+
+//     })
+
+//     test("Returns correct result when user has no collections", async () => {
+
+//     })
+
+//     test("Not found (code 404) for nonexistent username", async () => {
+
+//     })
 // })
 //-------------------------------------------------------------------------------------------------
 
@@ -227,6 +266,33 @@ describe("POST /collections/[id]/colors", () => {
 // describe("PATCH /collections/[id]", () => {
 //     const urlTemp = "/collections/%d";
 
+//     test("Returns correct data for logged-in admin", async () => {
+
+//     })
+
+//     test("Returns correct data for non-admin, collection owner", async () => {
+
+//     })
+
+//     test("Unauthorized (code 400) for logged-in, non-owner of collection", async () => {
+
+//     })
+
+//     test("Unauthorized (code 400) for logged-out user", async () => {
+
+//     })
+
+//     test("Not found (code 404) for nonexistent collection ID", async () => {
+
+//     })
+
+//     test("Bad request (code 400) for missing request data", async () => {
+
+//     })
+
+//     test.each()("", (badTitle) => {
+
+//     })
 // })
 //-------------------------------------------------------------------------------------------------
 
@@ -235,5 +301,24 @@ describe("POST /collections/[id]/colors", () => {
 // describe("DELETE /collections/[id]", () => {
 //     const urlTemp = "/collections/%d";
 
+//     test("Returns correct data for admin", async () => {
+
+//     })
+
+//     test("Returns correct data for non-admin collection owner", async () => {
+
+//     })
+
+//     test("Unauthorized (code 400) for logged-in, non-owner of collection", async () => {
+
+//     })
+
+//     test("Unauthorized (code 400) for logged-out user", async () => {
+
+//     })
+
+//     test("Not found (code 404) for nonexistent collection ID", async () => {
+
+//     })
 // })
 //-------------------------------------------------------------------------------------------------
