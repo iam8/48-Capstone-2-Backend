@@ -91,10 +91,14 @@ router.delete(
     ensureAdminOrCollectionOwner,
     async (req, res, next) => {
         try {
-            const { id: collectionId, hex: colorHex } = req.params;
+            const { id, hex } = req.params;
+            const deleteRes = await Collection.removeColor(id, hex);
+            const {id: collectionId, colorHex} = deleteRes.deleted;
 
-            const deleteRes = await Collection.removeColor({collectionId, colorHex});
-            return res.json(deleteRes);
+            return res.json({
+                deleted: {collectionId, colorHex}
+            });
+
         } catch(err) {
             return next(err);
         }
