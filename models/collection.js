@@ -217,7 +217,7 @@ class Collection {
                 `No collection with ID of ${id} and color ${colorHex}`);
         }
 
-        return {"deleted": {id, colorHex}};
+        return {"deleted": result.rows[0]};
     }
 
     /**
@@ -239,7 +239,7 @@ class Collection {
             throw new NotFoundError(`No collection: ${id}`);
         }
 
-        return {"deleted": {id}};
+        return {"deleted": result.rows[0]};
     }
 }
 
