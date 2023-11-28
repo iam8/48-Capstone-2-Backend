@@ -430,33 +430,94 @@ describe("GET /collections - get data on all collections", () => {
 
 
 // Tests for GET /collections/users/[username] ----------------------------------------------------
-// describe("GET /collections/users/[username] - get collection data for a given user", () => {
-//     const urlTemp = "/collections/users/%s";
+describe("GET /collections/users/[username] - get collection data for a given user", () => {
+    const urlTemp = "/collections/users/%s";
 
-//     test("Returns correct data for logged-in admin", async () => {
+    test("Returns correct data for logged-in admin", async () => {
+        const user = userData[1];
+        const url = util.format(urlTemp, user.username);
 
-//     })
+        const expected = user.collections.map((coll) => ({
+            id: coll.id,
+            title: coll.title,
+            username: coll.username
+        }));
 
-//     test("Returns correct data for non-admin, corresponding user", async () => {
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[0]}`);
 
-//     })
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            collections: expected
+        });
+    })
 
-//     test("Unauthorized (code 400) for logged-in, non-owner of collection", async () => {
+    test("Returns correct data for non-admin, corresponding user", async () => {
+        const user = userData[1];
+        const url = util.format(urlTemp, user.username);
 
-//     })
+        const expected = user.collections.map((coll) => ({
+            id: coll.id,
+            title: coll.title,
+            username: coll.username
+        }));
 
-//     test("Unauthorized (code 400) for logged-out user", async () => {
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[1]}`);
 
-//     })
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            collections: expected
+        });
+    })
 
-//     test("Returns correct result when user has no collections", async () => {
+    test("Returns correct result when user has no collections", async () => {
+        const user = userData[2];
+        const url = util.format(urlTemp, user.username);
 
-//     })
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[0]}`);
 
-//     test("Not found (code 404) for nonexistent username", async () => {
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            collections: []
+        });
+    })
 
-//     })
-// })
+    test("Unauthorized (code 401) for logged-in, non-owner of collection", async () => {
+        const user = userData[0];
+        const url = util.format(urlTemp, user.username);
+
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[1]}`);
+
+        expect(resp.statusCode).toBe(401);
+    })
+
+    test("Unauthorized (code 401) for logged-out user", async () => {
+        const user = userData[0];
+        const url = util.format(urlTemp, user.username);
+
+        const resp = await request(app)
+            .get(url);
+
+        expect(resp.statusCode).toBe(401);
+    })
+
+    test("Not found (code 404) for nonexistent username", async () => {
+        const url = util.format(urlTemp, "nonexistent");
+
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[0]}`);
+
+        expect(resp.statusCode).toBe(404);
+    })
+})
 //-------------------------------------------------------------------------------------------------
 
 
