@@ -63,11 +63,15 @@ router.post(
         try {
             validateJson(req.body, collAddColorSchema);
 
-            const { id: collectionId } = req.params;
+            const { id } = req.params;
             const {colorHex} = req.body;
 
-            const addResult = await Collection.addColor({collectionId, colorHex});
-            return res.status(201).json(addResult);
+            const addRes = await Collection.addColor(id, colorHex);
+            return res.status(201).json({
+                collectionId: addRes.id,
+                colorHex: addRes.colorHex
+            });
+
         } catch(err) {
             return next(err);
         }
