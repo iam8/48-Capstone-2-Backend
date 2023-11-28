@@ -241,9 +241,23 @@ describe("DELETE /collections/[id]/colors/[hex] - remove given color from given 
         });
     })
 
-    // test("Returns correct data for non-admin, collection owner", async () => {
+    test("Returns correct data for non-admin collection owner", async () => {
+        const coll = userData[1].collections[0];
+        const colorHex = coll.colors[0];
+        const url = util.format(urlTemp, coll.id, colorHex);
 
-    // })
+        const resp = await request(app)
+            .delete(url)
+            .set("authorization", `Bearer ${tokens[1]}`);
+
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            deleted: {
+                collectionId: coll.id,
+                colorHex
+            }
+        });
+    })
 
     // test("Unauthorized (code 400) for logged-in, non-owner of collection", async () => {
 
