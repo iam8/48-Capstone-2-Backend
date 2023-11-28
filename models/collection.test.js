@@ -270,15 +270,17 @@ describe("removeColor()", () => {
     })
 
     test("Throws NotFoundError for nonexistent collection-color associations", async () => {
-        expect.assertions(3);
+        expect.assertions(4);
 
-        const coll = userData[0].collections[0];
-        const color = coll.colors[0];
+        const coll0 = userData[0].collections[0];
+        const coll1 = userData[1].collections[0];
+        const color0 = coll0.colors[0];
 
         const toRemove = [
-            {id: 0, colorHex: color},
-            {id: coll.id, colorHex: "abcdef"},
-            {id: 0, colorHex: "abcdef"}
+            {id: 0, colorHex: color0},
+            {id: 0, colorHex: "abcdef"},
+            {id: coll0.id, colorHex: "abcdef"},
+            {id: coll1.id, colorHex: color0}
         ];
 
         for (let data of toRemove) {
