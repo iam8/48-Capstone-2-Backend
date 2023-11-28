@@ -109,7 +109,7 @@ describe("POST /collections/[id]/colors", () => {
 
     // })
 
-    // test("Returns correct data for corresponding user (owner of collection)", async () => {
+    // test("Returns correct data for non-admin, collection owner", async () => {
 
     // })
 
@@ -121,6 +121,10 @@ describe("POST /collections/[id]/colors", () => {
 
     // })
 
+    // test("Bad request (code 400) for duplicate color", async () => {
+
+    // })
+
     // test("Bad request (code 400) for missing or invalid request data", async () => {
     //     const badData = ["123", "1234567", true];
     // })
@@ -128,6 +132,8 @@ describe("POST /collections/[id]/colors", () => {
     test.each(
         ["123", "1234567", true]
     )("Bad request (code 400) for invalid hex input: %s", async (badHex) => {
+        expect.assertions(1);
+
         const id = userData[0].collections[0].id;
         const url = util.format(urlTemp, id);
 
@@ -144,30 +150,90 @@ describe("POST /collections/[id]/colors", () => {
 
 
 // Tests for DELETE /collections/[id]/colors/[hex] ------------------------------------------------
+// describe("DELETE /collections/[id]/colors/[hex]", () => {
+//     const urlTemp = "/collections/%d/colors/%s";
 
+//     test("Returns correct data for logged-in admin", async () => {
+
+//     })
+
+//     test("Returns correct data for non-admin, collection owner", async () => {
+
+//     })
+
+//     test("Unauthorized (code 401) for logged-out user", async () => {
+
+//     })
+
+//     test("Not found (code 404) for nonexistent collection-color associations", async () => {
+
+//     })
+// })
 //-------------------------------------------------------------------------------------------------
 
 
 // Tests for GET /collections/[id] ----------------------------------------------------------------
+// describe("GET /collections/[id]", () => {
+//     const urlTemp = "/collections/%d";
 
+//     test("Returns correct data for logged-in admin", async () => {
+
+//     })
+
+//     test("Returns correct data for non-admin, collection owner", async () => {
+
+//     })
+
+//     test("Unauthorized (code 401) for logged-out user", async () => {
+
+//     })
+
+//     test("Not found (code 404) for nonexistent collection ID", async () => {
+
+//     })
+// })
 //-------------------------------------------------------------------------------------------------
 
 
 // Tests for GET /collections ---------------------------------------------------------------------
+// describe("GET /collections", () => {
+//     test("Returns correct data on all collections", async () => {
 
+//     })
+
+//     test("Returns correct result when no collections exist", async () => {
+
+//     })
+
+//     test("Unauthorized (code 401) for non-admin", async () => {
+
+//     })
+
+//     test("Unauthorized (code 401) for logged-out user", async () => {
+
+//     })
+// })
 //-------------------------------------------------------------------------------------------------
 
 
 // Tests for GET /collections/users/[username] ----------------------------------------------------
-
+// describe("GET /collections/users/[username]", () => {
+//     const urlTemp = "/collections/users/%s";
+// })
 //-------------------------------------------------------------------------------------------------
 
 
 // Tests for PATCH /collections/[id] --------------------------------------------------------------
+// describe("PATCH /collections/[id]", () => {
+//     const urlTemp = "/collections/%d";
 
+// })
 //-------------------------------------------------------------------------------------------------
 
 
 // Tests for DELETE /collections/[id] -------------------------------------------------------------
+// describe("DELETE /collections/[id]", () => {
+//     const urlTemp = "/collections/%d";
 
+// })
 //-------------------------------------------------------------------------------------------------
