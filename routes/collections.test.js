@@ -220,29 +220,43 @@ describe("POST /collections/[id]/colors - add new color to given collection", ()
 
 
 // Tests for DELETE /collections/[id]/colors/[hex] ------------------------------------------------
-// describe("DELETE /collections/[id]/colors/[hex] - remove given color from given collection", () => {
-//     const urlTemp = "/collections/%d/colors/%s";
+describe("DELETE /collections/[id]/colors/[hex] - remove given color from given collection", () => {
+    const urlTemp = "/collections/%d/colors/%s";
 
-//     test("Returns correct data for logged-in admin", async () => {
+    test("Returns correct data for logged-in admin", async () => {
+        const coll = userData[1].collections[0];
+        const colorHex = coll.colors[0];
+        const url = util.format(urlTemp, coll.id, colorHex);
 
-//     })
+        const resp = await request(app)
+            .delete(url)
+            .set("authorization", `Bearer ${tokens[0]}`);
 
-//     test("Returns correct data for non-admin, collection owner", async () => {
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            deleted: {
+                collectionId: coll.id,
+                colorHex
+            }
+        });
+    })
 
-//     })
+    // test("Returns correct data for non-admin, collection owner", async () => {
 
-//     test("Unauthorized (code 400) for logged-in, non-owner of collection", async () => {
+    // })
 
-//     })
+    // test("Unauthorized (code 400) for logged-in, non-owner of collection", async () => {
 
-//     test("Unauthorized (code 401) for logged-out user", async () => {
+    // })
 
-//     })
+    // test("Unauthorized (code 401) for logged-out user", async () => {
 
-//     test("Not found (code 404) for nonexistent collection-color associations", async () => {
+    // })
 
-//     })
-// })
+    // test("Not found (code 404) for nonexistent collection-color associations", async () => {
+
+    // })
+})
 //-------------------------------------------------------------------------------------------------
 
 
