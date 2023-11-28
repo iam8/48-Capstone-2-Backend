@@ -309,29 +309,68 @@ describe("DELETE /collections/[id]/colors/[hex] - remove given color from given 
 
 
 // Tests for GET /collections/[id] ----------------------------------------------------------------
-// describe("GET /collections/[id] - get data on a single given collection", () => {
-//     const urlTemp = "/collections/%d";
+describe("GET /collections/[id] - get data on a single given collection", () => {
+    const urlTemp = "/collections/%d";
 
-//     test("Returns correct data for logged-in admin", async () => {
+    test("Returns correct data for logged-in admin", async () => {
+        const coll = userData[1].collections[0];
+        const url = util.format(urlTemp, coll.id);
 
-//     })
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[0]}`);
 
-//     test("Returns correct data for non-admin, collection owner", async () => {
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            collection: coll
+        });
+    })
 
-//     })
+    test("Returns correct data for non-admin, collection owner", async () => {
+        const coll = userData[1].collections[0];
+        const url = util.format(urlTemp, coll.id);
 
-//     test("Unauthorized (code 400) for logged-in, non-owner of collection", async () => {
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[1]}`);
 
-//     })
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            collection: coll
+        });
+    })
 
-//     test("Unauthorized (code 401) for logged-out user", async () => {
+    test("Unauthorized (code 401) for logged-in, non-owner of collection", async () => {
+        const coll = userData[0].collections[0];
+        const url = util.format(urlTemp, coll.id);
 
-//     })
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[1]}`);
 
-//     test("Not found (code 404) for nonexistent collection ID", async () => {
+        expect(resp.statusCode).toBe(401);
+    })
 
-//     })
-// })
+    test("Unauthorized (code 401) for logged-out user", async () => {
+        const coll = userData[1].collections[0];
+        const url = util.format(urlTemp, coll.id);
+
+        const resp = await request(app)
+            .get(url);
+
+        expect(resp.statusCode).toBe(401);
+    })
+
+    test("Not found (code 404) for nonexistent collection ID", async () => {
+        const url = util.format(urlTemp, 0);
+
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[0]}`);
+
+        expect(resp.statusCode).toBe(404);
+    })
+})
 //-------------------------------------------------------------------------------------------------
 
 
