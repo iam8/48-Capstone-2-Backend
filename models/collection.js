@@ -71,7 +71,7 @@ class Collection {
         const colors = row0.colorHex ?
             result.rows.map(row => row.colorHex) : [];
 
-        return {id, title, username, colors};
+        return {id: row0.id, title, username, colors};
     }
 
     /**
