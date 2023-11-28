@@ -259,17 +259,51 @@ describe("DELETE /collections/[id]/colors/[hex] - remove given color from given 
         });
     })
 
-    // test("Unauthorized (code 400) for logged-in, non-owner of collection", async () => {
+    test("Unauthorized (code 401) for non-admin non-owner of collection", async () => {
+        const coll = userData[0].collections[0];
+        const colorHex = coll.colors[0];
+        const url = util.format(urlTemp, coll.id, colorHex);
 
-    // })
+        const resp = await request(app)
+            .delete(url)
+            .set("authorization", `Bearer ${tokens[1]}`);
 
-    // test("Unauthorized (code 401) for logged-out user", async () => {
+        expect(resp.statusCode).toBe(401);
+    })
 
-    // })
+    test("Unauthorized (code 401) for logged-out user", async () => {
+        const coll = userData[0].collections[0];
+        const colorHex = coll.colors[0];
+        const url = util.format(urlTemp, coll.id, colorHex);
 
-    // test("Not found (code 404) for nonexistent collection-color associations", async () => {
+        const resp = await request(app)
+            .delete(url);
 
-    // })
+        expect(resp.statusCode).toBe(401);
+    })
+
+    test("Not found (code 404) for nonexistent collection-color associations", async () => {
+        expect.assertions(4);
+
+        const coll0 = userData[0].collections[0];
+        const coll1 = userData[1].collections[0];
+        const color0 = coll0.colors[0];
+
+        const urls = [
+            util.format(urlTemp, coll0.id, "zzzzzz"),
+            util.format(urlTemp, 0, color0),
+            util.format(urlTemp, 0, "zzzzzz"),
+            util.format(urlTemp, coll1.id, color0)
+        ];
+
+        for (let url of urls) {
+            const resp = await request(app)
+                .delete(url)
+                .set("authorization", `Bearer ${tokens[0]}`);
+
+            expect(resp.statusCode).toBe(404);
+        }
+    })
 })
 //-------------------------------------------------------------------------------------------------
 
