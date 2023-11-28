@@ -3,6 +3,7 @@
 const request = require("supertest");
 const util = require('node:util');
 
+const db = require("../colors-db");
 const app = require("../app");
 const {
     commonBeforeAllAlt,
@@ -375,23 +376,56 @@ describe("GET /collections/[id] - get data on a single given collection", () => 
 
 
 // Tests for GET /collections ---------------------------------------------------------------------
-// describe("GET /collections - get data on all collections", () => {
-//     test("Returns correct data for logged-in admin", async () => {
+describe("GET /collections - get data on all collections", () => {
+    const url = "/collections";
 
-//     })
+    test("Returns correct data for logged-in admin", async () => {
+        const expected = [];
+        userData.forEach((user) => {
+            user.collections.forEach((coll) => {
+                const {id, title, username} = coll;
+                expected.push({id, title, username});
+            });
+        });
 
-//     test("Returns correct result when no collections exist", async () => {
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[0]}`);
 
-//     })
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            collections: expected
+        });
+    })
 
-//     test("Unauthorized (code 401) for non-admin", async () => {
+    test("Returns correct result when no collections exist", async () => {
+        await db.query(`DELETE FROM collections`);
 
-//     })
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[0]}`);
 
-//     test("Unauthorized (code 401) for logged-out user", async () => {
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            collections: []
+        });
+    })
 
-//     })
-// })
+    test("Unauthorized (code 401) for non-admin", async () => {
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[1]}`);
+
+        expect(resp.statusCode).toBe(401);
+    })
+
+    test("Unauthorized (code 401) for logged-out user", async () => {
+        const resp = await request(app)
+            .get(url);
+
+        expect(resp.statusCode).toBe(401);
+    })
+})
 //-------------------------------------------------------------------------------------------------
 
 
