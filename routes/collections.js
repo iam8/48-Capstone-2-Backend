@@ -173,7 +173,7 @@ router.patch("/:id", ensureLoggedIn, ensureAdminOrCollectionOwner, async (req, r
         const { id } = req.params;
         const {newTitle} = req.body;
 
-        const updated = await Collection.rename({id, newTitle});
+        const updated = await Collection.rename(id, newTitle);
         return res.json({updated});
     } catch(err) {
         return next(err);
