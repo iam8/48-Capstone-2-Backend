@@ -522,37 +522,113 @@ describe("GET /collections/users/[username] - get collection data for a given us
 
 
 // Tests for PATCH /collections/[id] --------------------------------------------------------------
-// describe("PATCH /collections/[id] - update a given collection", () => {
-//     const urlTemp = "/collections/%d";
+describe("PATCH /collections/[id] - update a given collection", () => {
+    const urlTemp = "/collections/%d";
 
-//     test("Returns correct data for logged-in admin", async () => {
+    test("Returns correct data for logged-in admin", async () => {
+        const coll = userData[1].collections[0];
+        const url = util.format(urlTemp, coll.id);
+        const upData = {newTitle: "New Title"};
+        const expected = {
+            id: coll.id,
+            title: upData.newTitle,
+            username: coll.username
+        };
 
-//     })
+        const resp = await request(app)
+            .patch(url)
+            .send(upData)
+            .set("authorization", `Bearer ${tokens[0]}`);
 
-//     test("Returns correct data for non-admin, collection owner", async () => {
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            updated: expected
+        });
+    })
 
-//     })
+    test("Returns correct data for non-admin, collection owner", async () => {
+        const coll = userData[1].collections[0];
+        const url = util.format(urlTemp, coll.id);
+        const upData = {newTitle: "New Title"};
+        const expected = {
+            id: coll.id,
+            title: upData.newTitle,
+            username: coll.username
+        };
 
-//     test("Unauthorized (code 400) for logged-in, non-owner of collection", async () => {
+        const resp = await request(app)
+            .patch(url)
+            .send(upData)
+            .set("authorization", `Bearer ${tokens[1]}`);
 
-//     })
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            updated: expected
+        });
+    })
 
-//     test("Unauthorized (code 400) for logged-out user", async () => {
+    test("Unauthorized (code 401) for logged-in, non-owner of collection", async () => {
+        const coll = userData[0].collections[0];
+        const url = util.format(urlTemp, coll.id);
+        const upData = {newTitle: "New Title"};
 
-//     })
+        const resp = await request(app)
+            .patch(url)
+            .send(upData)
+            .set("authorization", `Bearer ${tokens[1]}`);
 
-//     test("Not found (code 404) for nonexistent collection ID", async () => {
+        expect(resp.statusCode).toBe(401);
+    })
 
-//     })
+    test("Unauthorized (code 401) for logged-out user", async () => {
+        const coll = userData[0].collections[0];
+        const url = util.format(urlTemp, coll.id);
+        const upData = {newTitle: "New Title"};
 
-//     test("Bad request (code 400) for missing request data", async () => {
+        const resp = await request(app)
+            .patch(url)
+            .send(upData)
 
-//     })
+        expect(resp.statusCode).toBe(401);
+    })
 
-//     test.each()("", (badTitle) => {
+    test("Not found (code 404) for nonexistent collection ID", async () => {
+        const url = util.format(urlTemp, 0);
+        const upData = {newTitle: "New Title"};
 
-//     })
-// })
+        const resp = await request(app)
+            .patch(url)
+            .send(upData)
+            .set("authorization", `Bearer ${tokens[0]}`);
+
+        expect(resp.statusCode).toBe(404);
+    })
+
+    test("Bad request (code 400) for missing request data", async () => {
+        const coll = userData[0].collections[0];
+        const url = util.format(urlTemp, coll.id);
+
+        const resp = await request(app)
+            .patch(url)
+            .send({})
+            .set("authorization", `Bearer ${tokens[0]}`);
+
+        expect(resp.statusCode).toBe(400);
+    })
+
+    test("Bad request (code 400) for invalid title input type", async () => {
+        const coll = userData[0].collections[0];
+        const url = util.format(urlTemp, coll.id);
+        const upData = {newTitle: 123};
+
+        const resp = await request(app)
+            .patch(url)
+            .send(upData)
+            .set("authorization", `Bearer ${tokens[0]}`);
+
+        expect(resp.statusCode).toBe(400);
+    })
+})
 //-------------------------------------------------------------------------------------------------
 
 
