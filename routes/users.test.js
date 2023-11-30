@@ -118,40 +118,140 @@ describe("POST /users - add a new user", () => {
 
 
 // Tests for GET /users ---------------------------------------------------------------------------
-// describe("GET /users - get data on all users", () => {
-//     test("Returns correct data for admin", async () => {
+describe("GET /users - get data on all users", () => {
+    const url = "/users";
 
-//     })
+    test("Returns correct data for admin", async () => {
+        const users = userData.map((user) => ({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            isAdmin: user.isAdmin
+        }));
 
-//     test("Returns correct result if no users exist", async () => {
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[0]}`);
 
-//     })
-// })
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({users});
+    })
+
+    test("Returns correct result if no users exist", async () => {
+        await db.query(`DELETE FROM users`);
+
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[0]}`);
+
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({users: []});
+    })
+
+    test("Unauthorized (code 401) for non-admin", async () => {
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[1]}`);
+
+        expect(resp.statusCode).toBe(401);
+    })
+
+    test("Unauthorized (code 401) for logged-out user", async () => {
+        const resp = await request(app)
+            .get(url);
+
+        expect(resp.statusCode).toBe(401);
+    })
+})
 //-------------------------------------------------------------------------------------------------
 
 
 // Tests for GET /users/[username] ----------------------------------------------------------------
-// describe("GET /users/[username] - get data on given user", () => {
-//     test("Returns correct data for admin", async () => {
+describe("GET /users/[username] - get data on given user", () => {
+    const urlTemp = "/users/%s";
 
-//     })
+    test("Returns correct data for admin", async () => {
+        const user = userData[0];
+        const colls = user.collections.map((coll) => ({
+            id: coll.id,
+            title: coll.title
+        }));
+        const url = util.format(urlTemp, user.username);
 
-//     test("Returns correct data for non-admin corresponding user", async () => {
+        const expected = {
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            isAdmin: user.isAdmin,
+            collections: colls
+        };
 
-//     })
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[0]}`);
 
-//     test("Unauthorized (code 401) for non-admin non-corresponding user", async () => {
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            user: expected
+        });
+    })
 
-//     })
+    test("Returns correct data for non-admin corresponding user", async () => {
+        const user = userData[1];
+        const colls = user.collections.map((coll) => ({
+            id: coll.id,
+            title: coll.title
+        }));
+        const url = util.format(urlTemp, user.username);
 
-//     test("Unauthorized (code 401) for logged-out user", async () => {
+        const expected = {
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            isAdmin: user.isAdmin,
+            collections: colls
+        };
 
-//     })
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[1]}`);
 
-//     test("Not found (code 404) for nonexistent username", async () => {
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            user: expected
+        });
+    })
 
-//     })
-// })
+    test("Unauthorized (code 401) for non-admin non-corresponding user", async () => {
+        const user = userData[0];
+        const url = util.format(urlTemp, user.username);
+
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[1]}`);
+
+        expect(resp.statusCode).toBe(401);
+    })
+
+    test("Unauthorized (code 401) for logged-out user", async () => {
+        const user = userData[0];
+        const url = util.format(urlTemp, user.username);
+
+        const resp = await request(app)
+            .get(url);
+
+        expect(resp.statusCode).toBe(401);
+    })
+
+    test("Not found (code 404) for nonexistent username", async () => {
+        const url = util.format(urlTemp, "nonexistent");
+        const resp = await request(app)
+            .get(url)
+            .set("authorization", `Bearer ${tokens[0]}`);
+
+        expect(resp.statusCode).toBe(404);
+    })
+})
 //-------------------------------------------------------------------------------------------------
 
 
