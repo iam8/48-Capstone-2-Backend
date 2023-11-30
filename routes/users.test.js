@@ -256,39 +256,144 @@ describe("GET /users/[username] - get data on given user", () => {
 
 
 // Tests for PATCH /users/[username] --------------------------------------------------------------
-// describe("PATCH /users/[username] - update data on given user", () => {
-    // test("Returns correct data for admin", async () => {
+describe("PATCH /users/[username] - update data on given user", () => {
+    const urlTemp = "/users/%s";
+    const fullValidData = {
+        firstName: "NEWFIRST",
+        lastName: "NEWLAST",
+        password: "NEWPW",
+        isAdmin: true
+    };
 
-    // })
+    test("Returns correct data for admin", async () => {
+        const user = userData[1];
+        const url = util.format(urlTemp, user.username);
+        const expected = {
+            username: user.username,
+            firstName: fullValidData.firstName,
+            lastName: fullValidData.lastName,
+            isAdmin: fullValidData.isAdmin
+        };
 
-    // test("Returns correct data for non-admin corresponding user", async () => {
+        const resp = await request(app)
+            .patch(url)
+            .send(fullValidData)
+            .set("authorization", `Bearer ${tokens[0]}`);
 
-    // })
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            user: expected
+        });
+    })
 
-    // test("Returns correct data when some data fields are missing", async () => {
+    test("Returns correct data for non-admin corresponding user", async () => {
+        const user = userData[1];
+        const url = util.format(urlTemp, user.username);
+        const expected = {
+            username: user.username,
+            firstName: fullValidData.firstName,
+            lastName: fullValidData.lastName,
+            isAdmin: fullValidData.isAdmin
+        };
 
-    // })
+        const resp = await request(app)
+            .patch(url)
+            .send(fullValidData)
+            .set("authorization", `Bearer ${tokens[1]}`);
 
-    // test("Unauthorized (code 401) for non-admin non-corresponding user", async () => {
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            user: expected
+        });
+    })
 
-    // })
+    test("Returns correct data when some request input fields are missing", async () => {
+        const user = userData[1];
+        const url = util.format(urlTemp, user.username);
+        const partData = {
+            firstName: "NEWFIRST",
+            isAdmin: true
+        };
 
-    // test("Unauthorized (code 401) for logged-out user", async () => {
+        const expected = {
+            username: user.username,
+            firstName: partData.firstName,
+            lastName: user.lastName,
+            isAdmin: partData.isAdmin
+        };
 
-    // })
+        const resp = await request(app)
+            .patch(url)
+            .send(partData)
+            .set("authorization", `Bearer ${tokens[0]}`);
 
-    // test("Not found (code 404) for nonexistent username", async () => {
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({
+            user: expected
+        });
+    })
 
-    // })
+    test("Unauthorized (code 401) for non-admin non-corresponding user", async () => {
+        const user = userData[0];
+        const url = util.format(urlTemp, user.username);
+        const resp = await request(app)
+            .patch(url)
+            .send(fullValidData)
+            .set("authorization", `Bearer ${tokens[1]}`);
 
-    // test("Bad request (code 400) when no data fields are passed in", async () => {
+        expect(resp.statusCode).toBe(401);
+    })
 
-    // })
+    test("Unauthorized (code 401) for logged-out user", async () => {
+        const user = userData[1];
+        const url = util.format(urlTemp, user.username);
+        const resp = await request(app)
+            .patch(url)
+            .send(fullValidData);
 
-    // test("Bad request (code 400) for invalid request data types", async () => {
+        expect(resp.statusCode).toBe(401);
+    })
 
-    // })
-// })
+    test("Not found (code 404) for nonexistent username", async () => {
+        const url = util.format(urlTemp, "nonexistent");
+        const resp = await request(app)
+            .patch(url)
+            .send(fullValidData)
+            .set("authorization", `Bearer ${tokens[0]}`);
+
+        expect(resp.statusCode).toBe(404);
+    })
+
+    test("Bad request (code 400) when no data fields are passed in", async () => {
+        const user = userData[1];
+        const url = util.format(urlTemp, user.username);
+
+        const resp = await request(app)
+            .patch(url)
+            .send({})
+            .set("authorization", `Bearer ${tokens[0]}`);
+
+        expect(resp.statusCode).toBe(400);
+    })
+
+    test("Bad request (code 400) for invalid request data types", async () => {
+        const user = userData[1];
+        const url = util.format(urlTemp, user.username);
+        const badData = {
+            firstName: 123,
+            lastName: [],
+            password: true,
+            isAdmin: 42
+        };
+
+        const resp = await request(app)
+            .patch(url)
+            .send(badData)
+            .set("authorization", `Bearer ${tokens[0]}`);
+
+        expect(resp.statusCode).toBe(400);
+    })
+})
 //-------------------------------------------------------------------------------------------------
 
 
