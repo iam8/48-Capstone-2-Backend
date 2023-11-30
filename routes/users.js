@@ -18,16 +18,14 @@ const userUpdateSchema = require("../schemas/userUpdate.json");
 const router = express.Router();
 
 
-/** POST / { user } => { user, token }
- *
- * Accepts user data: { username, password, firstName, lastName, isAdmin }
+/** POST / { user } => {user: { username, firstName, lastName, isAdmin }, token }, where token is
+ * a newly created authentication token.
  *
  * Add a new user. This is not the registration endpoint --- instead, this is
  * only for admin users to add new users. The new user being added can be an
  * admin.
  *
- * This returns the newly created user and an authentication token for them:
- *  {user: { username, firstName, lastName, isAdmin }, token }
+ * Accepts user data: { username, password, firstName, lastName, isAdmin }.
  *
  * Authorization required: admin
  **/
@@ -60,10 +58,8 @@ router.get("/", ensureAdmin, async function (req, res, next) {
 });
 
 
-/** GET /[username] => { user }
- *
- * Returns user data: { username, firstName, lastName, isAdmin, collections }
- *   where collections is { id, title }.
+/** GET /[username] => { user: { username, firstName, lastName, isAdmin, collections }},
+ *  where collections is { id, title }.
  *
  * Authorization required: admin or same user-as-:username
  **/
@@ -77,13 +73,11 @@ router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, nex
 });
 
 
-/** PATCH /[username] { user } => { user }
+/** PATCH /[username] { user } => { user: { username, firstName, lastName, isAdmin }}.
  *
  * Update a user's data.
  *
  * User data can include (all optional): { firstName, lastName, password, isAdmin }
- *
- * Returns { username, firstName, lastName, isAdmin }
  *
  * Authorization required: admin or same-user-as-:username
  **/
