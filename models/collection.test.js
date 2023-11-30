@@ -5,15 +5,15 @@ const Collection = require("./collection");
 const {NotFoundError, BadRequestError} = require("../expressError");
 
 const {
-    commonBeforeAllAlt,
+    commonBeforeAll,
     commonBeforeEach,
     commonAfterEach,
     commonAfterAll,
-    userData,
-} = require("./_testCommon");
+    userData
+} = require("../test_setup/_testCommon");
 
 
-beforeAll(commonBeforeAllAlt);
+beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);

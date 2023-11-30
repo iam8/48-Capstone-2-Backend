@@ -10,20 +10,17 @@ const {
 } = require("../expressError");
 
 const {
-    // commonBeforeAll,
-    commonBeforeAllAlt,
+    commonBeforeAll,
     commonBeforeEach,
     commonAfterEach,
     commonAfterAll,
-    // usernames,
-    // collIds,
     userData,
     passwords
-} = require("./_testCommon");
+} = require("../test_setup/_testCommon");
 
 
 // beforeAll(commonBeforeAll);
-beforeAll(commonBeforeAllAlt);
+beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
