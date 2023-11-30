@@ -257,61 +257,98 @@ describe("GET /users/[username] - get data on given user", () => {
 
 // Tests for PATCH /users/[username] --------------------------------------------------------------
 // describe("PATCH /users/[username] - update data on given user", () => {
-//     test("Returns correct data for admin", async () => {
+    // test("Returns correct data for admin", async () => {
 
-//     })
+    // })
 
-//     test("Returns correct data for non-admin corresponding user", async () => {
+    // test("Returns correct data for non-admin corresponding user", async () => {
 
-//     })
+    // })
 
-//     test("Returns correct data when some data fields are missing", async () => {
+    // test("Returns correct data when some data fields are missing", async () => {
 
-//     })
+    // })
 
-//     test("Unauthorized (code 401) for non-admin non-corresponding user", async () => {
+    // test("Unauthorized (code 401) for non-admin non-corresponding user", async () => {
 
-//     })
+    // })
 
-//     test("Unauthorized (code 401) for logged-out user", async () => {
+    // test("Unauthorized (code 401) for logged-out user", async () => {
 
-//     })
+    // })
 
-//     test("Not found (code 404) for nonexistent username", async () => {
+    // test("Not found (code 404) for nonexistent username", async () => {
 
-//     })
+    // })
 
-//     test("Bad request (code 400) when no data fields are passed in", async () => {
+    // test("Bad request (code 400) when no data fields are passed in", async () => {
 
-//     })
+    // })
 
-//     test("Bad request (code 400) for invalid request data types", async () => {
+    // test("Bad request (code 400) for invalid request data types", async () => {
 
-//     })
+    // })
 // })
 //-------------------------------------------------------------------------------------------------
 
 
 // Tests for DELETE /users/[username] -------------------------------------------------------------
-// describe("DELETE /users/[username] - delete given user", () => {
-//     test("Returns correct data for admin", async () => {
+describe("DELETE /users/[username] - delete given user", () => {
+    const urlTemp = "/users/%s";
 
-//     })
+    test("Returns correct data for admin", async () => {
+        const username = userData[1].username;
+        const url = util.format(urlTemp, username);
 
-//     test("Returns correct data for non-admin corresponding user", async () => {
+        const resp = await request(app)
+            .delete(url)
+            .set("authorization", `Bearer ${tokens[0]}`);
 
-//     })
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({deleted: username});
+    })
 
-//     test("Unauthorized (code 401) for non-admin non-corresponding user", async () => {
+    test("Returns correct data for non-admin corresponding user", async () => {
+        const username = userData[1].username;
+        const url = util.format(urlTemp, username);
 
-//     })
+        const resp = await request(app)
+            .delete(url)
+            .set("authorization", `Bearer ${tokens[1]}`);
 
-//     test("Unauthorized (code 401) for logged-out user", async () => {
+        expect(resp.statusCode).toBe(200);
+        expect(resp.body).toEqual({deleted: username});
+    })
 
-//     })
+    test("Unauthorized (code 401) for non-admin non-corresponding user", async () => {
+        const username = userData[0].username;
+        const url = util.format(urlTemp, username);
 
-//     test("Not found (code 404) for nonexistent username", async () => {
+        const resp = await request(app)
+            .delete(url)
+            .set("authorization", `Bearer ${tokens[1]}`);
 
-//     })
-// })
+        expect(resp.statusCode).toBe(401);
+    })
+
+    test("Unauthorized (code 401) for logged-out user", async () => {
+        const username = userData[0].username;
+        const url = util.format(urlTemp, username);
+
+        const resp = await request(app)
+            .delete(url);
+
+        expect(resp.statusCode).toBe(401);
+    })
+
+    test("Not found (code 404) for nonexistent username", async () => {
+        const url = util.format(urlTemp, "nonexistent");
+
+        const resp = await request(app)
+            .delete(url)
+            .set("authorization", `Bearer ${tokens[0]}`);
+
+        expect(resp.statusCode).toBe(404);
+    })
+})
 //-------------------------------------------------------------------------------------------------
