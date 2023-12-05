@@ -5,18 +5,18 @@ const util = require('node:util');
 
 const db = require("../colors-db");
 const app = require("../app");
+
 const {
-    commonBeforeAllAlt,
+    commonBeforeAll,
     commonBeforeEach,
     commonAfterEach,
     commonAfterAll,
     userData,
-    tokens,
-    passwords
-} = require("./_testCommon");
+    tokens
+} = require("../test_setup/_testCommon");
 
 
-beforeAll(commonBeforeAllAlt);
+beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
