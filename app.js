@@ -1,4 +1,3 @@
-
 /** Express app for Colors project. */
 
 const express = require("express");

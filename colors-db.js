@@ -1,4 +1,4 @@
-"use strict";
+/** Database client setup and connection. */
 
 const { Client } = require("pg");
 const { getDatabaseUri } = require("./config");

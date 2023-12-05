@@ -1,3 +1,5 @@
+/** Custom Express error classes. */
+
 
 /**
  * Extends normal JS error - allows adding an HTTP status code.
@@ -33,7 +35,7 @@ class BadRequestError extends ExpressError {
     }
 }
 
-/** 403 Forbidden error. */
+/** 403 FORBIDDEN error. */
 class ForbiddenError extends ExpressError {
     constructor(message = "Forbidden") {
         super(message, 403);

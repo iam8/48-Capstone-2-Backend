@@ -1,5 +1,7 @@
 "use strict";
 
+/** Server startup for Express app. */
+
 const app = require("./app");
 const { HOSTNAME, PORT } = require("./config");
 

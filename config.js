@@ -1,4 +1,3 @@
-
 /** Shared config for application. */
 
 require("dotenv").config();
