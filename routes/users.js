@@ -1,5 +1,3 @@
-"use strict";
-
 /** Routes for users.
  *
  * Base URL: /users
@@ -18,14 +16,13 @@ const userUpdateSchema = require("../schemas/userUpdate.json");
 const router = express.Router();
 
 
-/** POST / { user } => {user: { username, firstName, lastName, isAdmin }, token }, where token is
- * a newly created authentication token.
+/** POST / {username, password, firstName, lastName, isAdmin} =>
+ * {user: {username, firstName, lastName, isAdmin}, token}, where token is a newly created
+ * authentication token.
  *
  * Add a new user. This is not the registration endpoint --- instead, this is
  * only for admin users to add new users. The new user being added can be an
  * admin.
- *
- * Accepts user data: { username, password, firstName, lastName, isAdmin }.
  *
  * Authorization required: admin
  **/
@@ -61,7 +58,9 @@ router.get("/", ensureAdmin, async function (req, res, next) {
 /** GET /[username] => { user: { username, firstName, lastName, isAdmin, collections }},
  *  where collections is { id, title }.
  *
- * Authorization required: admin or same user-as-:username
+ * Get data on user specified by username in URL.
+ *
+ * Authorization required: admin or user corresponding to given username
  **/
 router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
     try {
@@ -73,13 +72,13 @@ router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, nex
 });
 
 
-/** PATCH /[username] { user } => { user: { username, firstName, lastName, isAdmin }}.
+/** PATCH /[username] { firstName, lastName, password, isAdmin } =>
+ * { user: { username, firstName, lastName, isAdmin }}.
  *
- * Update a user's data.
+ * Fully or partially update data of the user with username specified in the URL.
+ * All input fields are optional.
  *
- * User data can include (all optional): { firstName, lastName, password, isAdmin }
- *
- * Authorization required: admin or same-user-as-:username
+ * Authorization required: admin or user corresponding to given username
  **/
 router.patch("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
     try {
@@ -95,9 +94,9 @@ router.patch("/:username", ensureCorrectUserOrAdmin, async function (req, res, n
 
 /** DELETE /[username] => { deleted: username }
  *
- * Remove a user.
+ * Remove the user with username specified in URL.
  *
- * Authorization required: admin or same-user-as-:username
+ * Authorization required: admin or user corresponding to given username
  **/
 router.delete("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
     try {
