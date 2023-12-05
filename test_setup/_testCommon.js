@@ -1,10 +1,12 @@
 const bcrypt = require("bcrypt");
 
 const db = require("../colors-db.js");
+const {createToken} = require("../helpers/tokens.js");
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
 const userData = [];
 const passwords = ["password0", "password1", "password2"];
+const tokens = [];
 
 
 async function commonBeforeAll() {
@@ -96,6 +98,19 @@ async function commonBeforeAll() {
         colorRes.rows[5].colorHex
     );
 
+    // CREATE USER AUTH TOKENS
+    tokens.push(
+        createToken({
+            username: userData[0].username, isAdmin: userData[0].isAdmin
+        }),
+        createToken({
+            username: userData[1].username, isAdmin: userData[1].isAdmin
+        }),
+        createToken({
+            username: userData[2].username, isAdmin: userData[2].isAdmin
+        }),
+    );
+
     console.log("TEST DATA OBJECT:");
     console.dir(userData, {depth: null});
 }
@@ -123,5 +138,6 @@ module.exports = {
     commonAfterEach,
     commonAfterAll,
     userData,
-    passwords
+    passwords,
+    tokens
 };
