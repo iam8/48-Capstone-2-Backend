@@ -19,7 +19,6 @@ const {
 } = require("../test_setup/_testCommon");
 
 
-// beforeAll(commonBeforeAll);
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
