@@ -25,7 +25,7 @@ afterAll(commonAfterAll);
 describe("POST /collections - add new collection for current user", () => {
     const url = "/collections";
 
-    test("Returns correct data for logged-in, non-admin", async () => {
+    test("Returns correct data for non-admin", async () => {
         const data = {
             title: "New Collection"
         };
@@ -45,7 +45,7 @@ describe("POST /collections - add new collection for current user", () => {
         });
     })
 
-    test("Returns correct data for logged-in admin", async () => {
+    test("Returns correct data for admin", async () => {
         const data = {
             title: "New Collection"
         };
@@ -105,7 +105,7 @@ describe("POST /collections - add new collection for current user", () => {
 describe("POST /collections/[id]/colors - add new color to given collection", () => {
     const urlTemp = "/collections/%d/colors";
 
-    test("Returns correct data for logged-in admin", async () => {
+    test("Returns correct data for admin", async () => {
         const id = userData[1].collections[0].id;
         const colorHex = "123456";
         const url = util.format(urlTemp, id);
@@ -139,7 +139,7 @@ describe("POST /collections/[id]/colors - add new color to given collection", ()
         });
     })
 
-    test("Unauthorized (code 401) for logged-in, non-owner of collection", async () => {
+    test("Unauthorized (code 401) for non-admin non-owner of collection", async () => {
         const id = userData[0].collections[0].id;
         const colorHex = "123456";
         const url = util.format(urlTemp, id);
@@ -224,7 +224,7 @@ describe("POST /collections/[id]/colors - add new color to given collection", ()
 describe("DELETE /collections/[id]/colors/[hex] - remove given color from given collection", () => {
     const urlTemp = "/collections/%d/colors/%s";
 
-    test("Returns correct data for logged-in admin", async () => {
+    test("Returns correct data for admin", async () => {
         const coll = userData[1].collections[0];
         const colorHex = coll.colors[0];
         const url = util.format(urlTemp, coll.id, colorHex);
@@ -313,7 +313,7 @@ describe("DELETE /collections/[id]/colors/[hex] - remove given color from given 
 describe("GET /collections/[id] - get data on a single given collection", () => {
     const urlTemp = "/collections/%d";
 
-    test("Returns correct data for logged-in admin", async () => {
+    test("Returns correct data for admin", async () => {
         const coll = userData[1].collections[0];
         const url = util.format(urlTemp, coll.id);
 
@@ -327,7 +327,7 @@ describe("GET /collections/[id] - get data on a single given collection", () => 
         });
     })
 
-    test("Returns correct data for non-admin, collection owner", async () => {
+    test("Returns correct data for non-admin collection owner", async () => {
         const coll = userData[1].collections[0];
         const url = util.format(urlTemp, coll.id);
 
@@ -341,7 +341,7 @@ describe("GET /collections/[id] - get data on a single given collection", () => 
         });
     })
 
-    test("Unauthorized (code 401) for logged-in, non-owner of collection", async () => {
+    test("Unauthorized (code 401) for non-admin non-owner of collection", async () => {
         const coll = userData[0].collections[0];
         const url = util.format(urlTemp, coll.id);
 
@@ -379,7 +379,7 @@ describe("GET /collections/[id] - get data on a single given collection", () => 
 describe("GET /collections - get data on all collections", () => {
     const url = "/collections";
 
-    test("Returns correct data for logged-in admin", async () => {
+    test("Returns correct data for admin", async () => {
         const expected = [];
         userData.forEach((user) => {
             user.collections.forEach((coll) => {
@@ -433,7 +433,7 @@ describe("GET /collections - get data on all collections", () => {
 describe("GET /collections/users/[username] - get collection data for a given user", () => {
     const urlTemp = "/collections/users/%s";
 
-    test("Returns correct data for logged-in admin", async () => {
+    test("Returns correct data for admin", async () => {
         const user = userData[1];
         const url = util.format(urlTemp, user.username);
 
@@ -487,7 +487,7 @@ describe("GET /collections/users/[username] - get collection data for a given us
         });
     })
 
-    test("Unauthorized (code 401) for logged-in, non-owner of collection", async () => {
+    test("Unauthorized (code 401) for non-admin non-owner of collection", async () => {
         const user = userData[0];
         const url = util.format(urlTemp, user.username);
 
@@ -525,7 +525,7 @@ describe("GET /collections/users/[username] - get collection data for a given us
 describe("PATCH /collections/[id] - update a given collection", () => {
     const urlTemp = "/collections/%d";
 
-    test("Returns correct data for logged-in admin", async () => {
+    test("Returns correct data for admin", async () => {
         const coll = userData[1].collections[0];
         const url = util.format(urlTemp, coll.id);
         const upData = {newTitle: "New Title"};
@@ -546,7 +546,7 @@ describe("PATCH /collections/[id] - update a given collection", () => {
         });
     })
 
-    test("Returns correct data for non-admin, collection owner", async () => {
+    test("Returns correct data for non-admin collection owner", async () => {
         const coll = userData[1].collections[0];
         const url = util.format(urlTemp, coll.id);
         const upData = {newTitle: "New Title"};
@@ -567,7 +567,7 @@ describe("PATCH /collections/[id] - update a given collection", () => {
         });
     })
 
-    test("Unauthorized (code 401) for logged-in, non-owner of collection", async () => {
+    test("Unauthorized (code 401) for non-admin non-owner of collection", async () => {
         const coll = userData[0].collections[0];
         const url = util.format(urlTemp, coll.id);
         const upData = {newTitle: "New Title"};
@@ -616,7 +616,7 @@ describe("PATCH /collections/[id] - update a given collection", () => {
         expect(resp.statusCode).toBe(400);
     })
 
-    test("Bad request (code 400) for invalid title input type", async () => {
+    test("Bad request (code 400) for invalid request data input type", async () => {
         const coll = userData[0].collections[0];
         const url = util.format(urlTemp, coll.id);
         const upData = {newTitle: 123};
@@ -668,7 +668,7 @@ describe("DELETE /collections/[id] - delete a given collection", () => {
         });
     })
 
-    test("Unauthorized (code 401) for logged-in, non-owner of collection", async () => {
+    test("Unauthorized (code 401) for non-admin non-owner of collection", async () => {
         const coll = userData[0].collections[0];
         const url = util.format(urlTemp, coll.id);
 

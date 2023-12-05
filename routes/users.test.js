@@ -5,7 +5,6 @@ const util = require('node:util');
 
 const db = require("../colors-db");
 const app = require("../app");
-
 const {
     commonBeforeAll,
     commonBeforeEach,
@@ -66,7 +65,7 @@ describe("POST /users - add a new user", () => {
         expect(resp.statusCode).toBe(401);
     })
 
-    test("Bad request (code 400) for adding duplicate user", async () => {
+    test("Bad request (code 400) for duplicate user", async () => {
         const dupUser = {
             username: userData[0].username,
             password: "password77",
