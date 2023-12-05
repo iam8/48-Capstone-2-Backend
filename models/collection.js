@@ -1,4 +1,4 @@
-"use strict";
+/** Color collection model. */
 
 const db = require("../colors-db");
 const {NotFoundError, BadRequestError} = require("../expressError");

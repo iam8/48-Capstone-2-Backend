@@ -1,4 +1,4 @@
-"use strict";
+/** User model. */
 
 const bcrypt = require("bcrypt");
 
