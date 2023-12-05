@@ -16,10 +16,9 @@ const authRegisterSchema = require("../schemas/authRegisterSchema.json");
 const router = new express.Router();
 
 
-/** POST /token: `{ username, password }` => `{ token }`
+/** POST /token: `{username, password}` => `{ token }`
  *
- * Returns: `{ token }`, where `token` is a JWT token which can be used to authenticate further
- * requests.
+ * Returned `token` is a JWT token which can be used to authenticate further requests.
  *
  * Authorization required: none
  */
@@ -37,12 +36,9 @@ router.post("/token", async function (req, res, next) {
 });
 
 
-/** POST /register: `{ user }` => `{ token }`
+/** POST /register: `{username, password, firstName, lastName}` => `{ token }`
  *
- * User data must include: `{ username, password, firstName, lastName }`.
- *
- * Returns: `{ token }`, where `token` is a JWT token which can be used to authenticate further
- * requests.
+ * Returned `token` is a JWT token which can be used to authenticate further requests.
  *
  * Authorization required: none
  */
