@@ -59,7 +59,7 @@ describe("authenticate()", () => {
 
 // Tests for register() ---------------------------------------------------------------------------
 describe("register()", () => {
-    test("Returns correct user data and adds correct user data to database", async () => {
+    test("Inserts new user into database and returns user data", async () => {
         const newUser = {
             username: "newUser",
             firstName: "FIRST",
@@ -77,7 +77,7 @@ describe("register()", () => {
         expect(dbUser.is_admin).toBe(false);
     })
 
-    test("Returns correct admin data and adds correct admin data to database", async () => {
+    test("Inserts new admin into database and returns admin data", async () => {
         const newAdmin = {
             username: "newAdmin",
             firstName: "ADMINFIRST",
@@ -124,7 +124,7 @@ describe("register()", () => {
 
 // Tests for findAll() ----------------------------------------------------------------------------
 describe("findAll()", () => {
-    test("Successfully returns all user data", async () => {
+    test("Returns list of all user data", async () => {
         const result = await User.findAll();
         const expected = [];
 
@@ -136,7 +136,7 @@ describe("findAll()", () => {
         expect(result).toEqual(expected);
     })
 
-    test("Returns empty array if no users exist", async () => {
+    test("Returns correct result if no users exist", async () => {
         await db.query(`DELETE FROM users`);
 
         const result = await User.findAll();
@@ -182,7 +182,7 @@ describe("get()", () => {
 
 // Tests for update() -----------------------------------------------------------------------------
 describe("update()", () => {
-    test("Successfully performs full update of an existing user", async () => {
+    test("Performs full update of an existing user", async () => {
         const data = {
             firstName: "newFN0",
             lastName: "newLN0",
@@ -216,7 +216,7 @@ describe("update()", () => {
         expect(dbUser.password.startsWith("$2b$")).toBe(true);
     })
 
-    test("Successfully performs partial update of an existing user", async () => {
+    test("Performs partial update of an existing user", async () => {
         const data = {
             firstName: "newFN1",
         };
@@ -276,7 +276,7 @@ describe("update()", () => {
 
 // Tests for remove() -----------------------------------------------------------------------------
 describe("remove()", () => {
-    test("Successfully removes user from database", async () => {
+    test("Removes user from database", async () => {
         await User.remove(userData[0].username);
 
         const dbResult = await db.query(`

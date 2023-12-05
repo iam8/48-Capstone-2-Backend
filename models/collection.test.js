@@ -100,7 +100,7 @@ describe("getAllByUser()", () => {
         expect(result).toEqual(expected);
     })
 
-    test("Returns empty list for a user that has no collections", async () => {
+    test("Returns correct result for a user that has no collections", async () => {
         const result = await Collection.getAllByUser(userData[2].username);
         expect(result).toEqual([]);
     })
@@ -134,7 +134,7 @@ describe("getAll()", () => {
         expect(result).toEqual(expected);
     })
 
-    test("Returns empty list if no collections", async () => {
+    test("Returns correct result if no collections", async () => {
         await db.query(`DELETE FROM collections`);
 
         const result = await Collection.getAll();
@@ -146,10 +146,9 @@ describe("getAll()", () => {
 
 // Tests for rename() -----------------------------------------------------------------------------
 describe("rename()", () => {
-    test("Successfully renames a given collection and returns correct data", async () => {
+    test("Renames a given collection and returns correct data", async () => {
         const coll = userData[0].collections[0];
         const newTitle = "NewTitle";
-        // const rnData = {id: coll.id, newTitle: "NewTitle"};
 
         const rnRes = await Collection.rename(coll.id, newTitle);
         expect(rnRes).toEqual({
@@ -185,7 +184,7 @@ describe("rename()", () => {
 
 // Tests for addColor() ---------------------------------------------------------------------------
 describe("addColor()", () => {
-    test("Successfully adds a new color to a collection and returns correct data", async () => {
+    test("Adds a new color to a collection and returns correct data", async () => {
         const coll = userData[0].collections[0];
         const origColors = coll.colors;
         const newColor = "ffffff";
@@ -249,7 +248,7 @@ describe("addColor()", () => {
 
 // Tests for removeColor() ------------------------------------------------------------------------
 describe("removeColor()", () => {
-    test("Successfully removes color from collection and returns correct data", async () => {
+    test("Removes color from collection and returns correct data", async () => {
         const coll = userData[0].collections[0];
         const color = coll.colors[0];
         const toRemove = {id: coll.id, colorHex: color};
@@ -297,7 +296,7 @@ describe("removeColor()", () => {
 
 // Tests for remove() -----------------------------------------------------------------------------
 describe("remove()", () => {
-    test("Successfully removes collection and returns correct data", async () => {
+    test("Removes collection and returns correct data", async () => {
         const coll = userData[0].collections[0];
 
         const rmRes = await Collection.remove(coll.id);
