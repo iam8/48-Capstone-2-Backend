@@ -9,7 +9,7 @@ const { UnauthorizedError } = require("../expressError");
 const Collection = require("../models/collection");
 
 
-/** Middleware: Authenticate user.
+/** Middleware: authenticate user.
  *
  * If a token was provided, verify it, and, if valid, store the token payload
  * on res.locals (this will include the username and isAdmin field.)
@@ -31,9 +31,9 @@ function authenticateJWT(req, res, next) {
 }
 
 
-/** Middleware to use when they must be logged in.
+/** Middleware to use when user must be logged in.
  *
- * If not, raises Unauthorized.
+ * If not, raises UnauthorizedError.
  */
 function ensureLoggedIn(req, res, next) {
     try {
@@ -45,9 +45,9 @@ function ensureLoggedIn(req, res, next) {
 }
 
 
-/** Middleware to use when they be logged in as an admin user.
+/** Middleware to use when user must be logged in as an admin.
  *
- *  If not, raises Unauthorized.
+ *  If not, raises UnauthorizedError.
  */
 function ensureAdmin(req, res, next) {
     try {
@@ -61,10 +61,10 @@ function ensureAdmin(req, res, next) {
     }
 }
 
-/** Middleware to use when they must provide a valid token & be user matching
- *  username provided as route param.
+/** Middleware to use when user must provide a valid token & be the user matching the username
+ * provided as a route param.
  *
- *  If not, raises Unauthorized.
+ *  If not, raises UnauthorizedError.
  */
 function ensureCorrectUserOrAdmin(req, res, next) {
     try {
@@ -81,10 +81,10 @@ function ensureCorrectUserOrAdmin(req, res, next) {
 
 
 /**
- * Ensure that current user is an admin or is the owner of the collection specified by ID in the
- * URL parameters.
+ * Ensure that current user is an admin and/or is the owner of the collection specified by ID in
+ * the URL parameters.
  *
- * If not, raises Unauthorized.
+ * If not, raises UnauthorizedError.
  */
 async function ensureAdminOrCollectionOwner(req, res, next) {
     try {
