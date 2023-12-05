@@ -1,5 +1,3 @@
-"use strict";
-
 /** Routes for collections.
  *
  * Base URL: /collections
@@ -46,14 +44,14 @@ router.post("/", ensureLoggedIn, async (req, res, next) => {
 })
 
 
-/** POST /[id]/colors - add a color to a collection.
+/** POST /[id]/colors - add a color to a collection with the ID specified in URL.
  *
  * Accepts data: `{colorHex}`, where `colorHex` is the 6-character hex representation for a new
  * color.
  *
  * Returns: `{collectionId, colorHex}`.
  *
- * Authorization required: logged in, and current user must be owner of the collection or an admin.
+ * Authorization required: logged in & admin or collection owner
  */
 router.post(
     "/:id/colors",
@@ -79,11 +77,12 @@ router.post(
 )
 
 
-/** DELETE /[id]/colors/[hex] - remove a color from a collection.
+/** DELETE /[id]/colors/[hex] - remove a color from a collection with collection ID and color hex
+ * value specified in URL.
  *
  * Returns: `{deleted: {collectionId, colorHex}}`.
  *
- * Authorization required: logged in, and current user must be owner of the collection or an admin.
+ * Authorization required: logged in & admin or collection owner
  */
 router.delete(
     "/:id/colors/:hex",
@@ -106,11 +105,11 @@ router.delete(
 )
 
 
-/** GET /[id] - get info on a collection by ID.
+/** GET /[id] - get info on a collection by ID specified in URL.
  *
  * Returns: `{collection: {id, title, username, colors}}`.
  *
- * Authorization required: logged in, and current user must be owner of the collection or an admin.
+ * Authorization required: logged in & admin or collection owner
  */
 router.get("/:id", ensureLoggedIn, ensureAdminOrCollectionOwner, async (req, res, next) => {
     try {
@@ -140,11 +139,11 @@ router.get("/", ensureAdmin, async (req, res, next) => {
 })
 
 
-/** GET /users/[username] - get all collections by a user.
+/** GET /users/[username] - get all collections by the username specified in URL.
  *
  * Returns: `{collections: [id, title, username]}`.
  *
- * Authorization required: admin or corresponding user (to given username)
+ * Authorization required: admin or user corresponding to given username
  */
 router.get("/users/:username", ensureCorrectUserOrAdmin, async(req, res, next) => {
     try {
@@ -158,13 +157,13 @@ router.get("/users/:username", ensureCorrectUserOrAdmin, async(req, res, next) =
 })
 
 
-/** PATCH /[id] - rename a collection by ID.
+/** PATCH /[id] - rename a collection by ID specified in URL.
  *
- * Accepts data: `{newTitle}`.
+ * Accepts data: `{newTitle}`, where `newTitle` is the updated title.
  *
  * Returns: `{updated: {id, title, username}}`.
  *
- * Authorization required: logged in, and current user must be owner of the collection or an admin.
+ * Authorization required: logged in & admin or collection owner
  */
 router.patch("/:id", ensureLoggedIn, ensureAdminOrCollectionOwner, async (req, res, next) => {
     try {
@@ -181,11 +180,11 @@ router.patch("/:id", ensureLoggedIn, ensureAdminOrCollectionOwner, async (req, r
 })
 
 
-/** DELETE /[id] - delete a collection by ID.
+/** DELETE /[id] - delete a collection by ID specified in URL.
  *
  * Returns: `{deleted: {id}}`.
  *
- * Authorization required: logged in, and current user must be owner of the collection or an admin.
+ * Authorization required: logged in & admin or collection owner
  */
 router.delete("/:id", ensureLoggedIn, ensureAdminOrCollectionOwner, async (req, res, next) => {
     try {
