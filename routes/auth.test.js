@@ -20,10 +20,10 @@ afterAll(commonAfterAll);
 
 
 // Tests for POST /auth/token ---------------------------------------------------------------------
-describe("POST /auth/token", () => {
+describe("POST /auth/token - get auth token for a user", () => {
     const url = "/auth/token";
 
-    test("Returns correct JSON for valid username + password", async () => {
+    test("Returns correct data format for valid username + password", async () => {
         const data = {
             username: userData[0].username,
             password: passwords[0]
@@ -78,10 +78,10 @@ describe("POST /auth/token", () => {
 
 
 // Tests for POST /auth/register ------------------------------------------------------------------
-describe("POST /auth/register", () => {
+describe("POST /auth/register - register new user", () => {
     const url = "/auth/register";
 
-    test("Returns correct data for valid user", async () => {
+    test("Returns correct data format for valid user", async () => {
         const data = {
             username: "newUser",
             password: "password",
