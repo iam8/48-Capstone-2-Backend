@@ -19,7 +19,9 @@ class User {
     /**
      * Authenticate user with username, password.
      *
-     * Returns `{ username, firstName, lastName, isAdmin }`.
+     * @param {string} username Username
+     * @param {string} password Password
+     * @returns {Promise<object>} `{username, firstName, lastName, isAdmin}` for authenticated user
      *
      * Throws `UnauthorizedError` is user not found or password is wrong.
      **/
@@ -51,9 +53,16 @@ class User {
     }
 
     /**
-     * Register user with data: `{ username, password, firstName, lastName, isAdmin }`.
+     * Register new user.
      *
-     * Returns `{ username, firstName, lastName, isAdmin }`.
+     * @param {object} data User data
+     * @param {string} data.username
+     * @param {string} data.password
+     * @param {string} data.firstName
+     * @param {string} data.lastName
+     * @param {boolean} data.isAdmin
+     * @returns {Promise<object>} `{username, firstName, lastName, isAdmin}` for user after
+     * registration
      *
      * Throws `BadRequestError` on duplicate usernames.
      **/
@@ -97,7 +106,9 @@ class User {
     /**
      * Find all users, sorted by username (ascending).
      *
-     * Returns `[{ username, firstName, lastName, isAdmin }, ...]`.
+     * @returns {Promise<object []>} list of data on all users: `[{ username, firstName, lastName,
+     * isAdmin }, ...]`
+     *
      **/
     static async findAll() {
         const result = await db.query(
@@ -116,8 +127,9 @@ class User {
     /**
      * Given a username, return data about user.
      *
-     * Returns `{ username, firstName, lastName, isAdmin, collections }`,
-     *  where `collections` is `[{ id, title }, ...]`.
+     * @param {string} username Target user's username
+     * @returns {Promise<object>} `{username, firstName, lastName, isAdmin, collections}`,
+     * where `collections` is `[{ id, title }, ...]`
      *
      * Throws `NotFoundError` if user not found.
      **/
@@ -158,10 +170,9 @@ class User {
      * This is a "partial update" --- it's fine if data doesn't contain
      * all the fields; this only changes provided ones.
      *
-     * `data` can include:
-     *   `{ firstName, lastName, password, isAdmin }`.
-     *
-     * Returns updated fields: `{ username, firstName, lastName, isAdmin }`.
+     * @param {string} username Target user's username
+     * @param {object} data Can include: `{firstName, lastName, password, isAdmin}`
+     * @returns {Promise<object>} Updated fields: `{username, firstName, lastName, isAdmin}`
      *
      * Throws `NotFoundError` if user is not found.
      *
@@ -208,9 +219,9 @@ class User {
     }
 
     /**
-     * Delete given user (by username) from database.
+     * Delete given user from database.
      *
-     * Returns `undefined`.
+     * @param {string} username Target user's username
      *
      * Throws `NotFoundError` if user not found.
      */
