@@ -4,16 +4,16 @@ const request = require("supertest");
 
 const app = require("../app");
 const {
-    commonBeforeAllAlt,
+    commonBeforeAll,
     commonBeforeEach,
     commonAfterEach,
     commonAfterAll,
     userData,
     passwords
-} = require("./_testCommon");
+} = require("../test_setup/_testCommon");
 
 
-beforeAll(commonBeforeAllAlt);
+beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
