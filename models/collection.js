@@ -13,7 +13,7 @@ class Collection {
      * @param {object} data - Collection data
      * @param {string} data.title Collection title
      * @param {string} data.username Username of user that will own this collection
-     * @returns {object} `{id, title, username}` for the created collection, if successful
+     * @returns {Promise<object>} `{id, title, username}` for the created collection, if successful
      *
      * Throws `NotFoundError` if user not found.
      */
@@ -47,7 +47,7 @@ class Collection {
      * Get all data on a single collection by ID.
      *
      * @param {number} id Target collection ID
-     * @returns {object} `{id, title, username, colors}`, where `colors` is a list of color hex
+     * @returns {Promise<object>} `{id, title, username, colors}`, where `colors` is a list of color hex
      * values in this collection.
      *
      * Throws `NotFoundError` if no collection with the given ID exists.
@@ -80,7 +80,7 @@ class Collection {
      * Get list of data on all collections by a given user.
      *
      * @param {string} username Target user's username
-     * @returns {object []} List of collection data: `[{id, title, username}, ...]`.
+     * @returns {Promise<object []>} List of collection data: `[{id, title, username}, ...]`.
      *
      * Throws `NotFoundError` if user is not found.
      */
@@ -110,7 +110,7 @@ class Collection {
     /**
      * Get list of data on all collections.
      *
-     * @returns {object []} List of collection data: `[{id, title, username}, ...]`.
+     * @returns {Promise<object []>} List of collection data: `[{id, title, username}, ...]`.
      */
     static async getAll() {
         const result = await db.query(`
@@ -126,7 +126,7 @@ class Collection {
      *
      * @param {number} id Target collection ID
      * @param {string} newTitle New collection title
-     * @returns {object} `{id, title, username}`, where `title` is the updated title.
+     * @returns {Promise<object>} `{id, title, username}`, where `title` is the updated title.
      *
      * Throws `NotFoundError` if no collection with the given ID exists.
      */
@@ -151,7 +151,7 @@ class Collection {
      *
      * @param {number} id Target collection ID
      * @param {string} colorHex 6-character hex representation of the new color
-     * @returns {object} `{id, colorHex}` upon success
+     * @returns {Promise<object>} `{id, colorHex}` upon success
      *
      * Throws `NotFoundError` if no collection with the given ID exists.
      *
@@ -201,7 +201,7 @@ class Collection {
      *
      * @param {number} id Target collection ID
      * @param {string} colorHex 6-character hex representation of the target color
-     * @returns {object} `{deleted: {id, colorHex}}` upon success
+     * @returns {Promise<object>} `{deleted: {id, colorHex}}` upon success
      *
      * Throws `NotFoundError` if the given collection-color association doesn't exist.
      */
@@ -227,7 +227,7 @@ class Collection {
      * Remove a collection by ID.
      *
      * @param {number} id Target collection ID
-     * @returns {object} `{deleted: {id}}` upon success
+     * @returns {Promise<object>} `{deleted: {id}}` upon success
      *
      * Throws `NotFoundError` if no collection with the given ID exists.
      */
