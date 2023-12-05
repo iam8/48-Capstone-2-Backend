@@ -1,5 +1,3 @@
-"use strict";
-
 /** Routes for authentication.
  *
  * Base URL: /auth
