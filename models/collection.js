@@ -10,9 +10,10 @@ class Collection {
     /**
      * Create a color collection, update database, and return new collection data.
      *
-     * Accepts data: `{title, username}`.
-     *
-     * Returns: `{id, title, username}`.
+     * @param {object} data - Collection data
+     * @param {string} data.title Collection title
+     * @param {string} data.username Username of user that will own this collection
+     * @returns {object} `{id, title, username}` for the created collection, if successful
      *
      * Throws `NotFoundError` if user not found.
      */
@@ -45,8 +46,9 @@ class Collection {
     /**
      * Get all data on a single collection by ID.
      *
-     * Returns: `{id, title, username, colors}`, where `colors` is a list of color hex values in
-     * this collection.
+     * @param {number} id Target collection ID
+     * @returns {object} `{id, title, username, colors}`, where `colors` is a list of color hex
+     * values in this collection.
      *
      * Throws `NotFoundError` if no collection with the given ID exists.
      */
@@ -75,9 +77,10 @@ class Collection {
     }
 
     /**
-     * Get list of data on every collection by a given user (by username).
+     * Get list of data on all collections by a given user.
      *
-     * Returns: `[{id, title, username}, ...]`.
+     * @param {string} username Target user's username
+     * @returns {object []} List of collection data: `[{id, title, username}, ...]`.
      *
      * Throws `NotFoundError` if user is not found.
      */
@@ -107,7 +110,7 @@ class Collection {
     /**
      * Get list of data on all collections.
      *
-     * Returns: `[{id, title, username}, ...]`.
+     * @returns {object []} List of collection data: `[{id, title, username}, ...]`.
      */
     static async getAll() {
         const result = await db.query(`
@@ -121,9 +124,9 @@ class Collection {
     /**
      * Rename a given collection.
      *
-     * Accepts a collection ID and a new collection title.
-     *
-     * Returns: `{id, title, username}`, where `title` is the updated title.
+     * @param {number} id Target collection ID
+     * @param {string} newTitle New collection title
+     * @returns {object} `{id, title, username}`, where `title` is the updated title.
      *
      * Throws `NotFoundError` if no collection with the given ID exists.
      */
@@ -146,9 +149,9 @@ class Collection {
     /**
      * Add a new color to a collection.
      *
-     * Accepts a collection ID and a 6-digit hex representation of a color.
-     *
-     * Returns: `{id, colorHex}`.
+     * @param {number} id Target collection ID
+     * @param {string} colorHex 6-character hex representation of the new color
+     * @returns {object} `{id, colorHex}` upon success
      *
      * Throws `NotFoundError` if no collection with the given ID exists.
      *
@@ -196,9 +199,9 @@ class Collection {
     /**
      * Remove a color from a collection.
      *
-     * Accepts a collection ID and a 6-digit hex representation of a color.
-     *
-     * Returns: `{deleted: {id, colorHex}}`.
+     * @param {number} id Target collection ID
+     * @param {string} colorHex 6-character hex representation of the target color
+     * @returns {object} `{deleted: {id, colorHex}}` upon success
      *
      * Throws `NotFoundError` if the given collection-color association doesn't exist.
      */
@@ -223,7 +226,8 @@ class Collection {
     /**
      * Remove a collection by ID.
      *
-     * Returns: `{deleted: {id}}`.
+     * @param {number} id Target collection ID
+     * @returns {object} `{deleted: {id}}` upon success
      *
      * Throws `NotFoundError` if no collection with the given ID exists.
      */
