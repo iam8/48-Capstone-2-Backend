@@ -1,4 +1,3 @@
-
 /** Helpers for JSON validation. */
 
 const {validate} = require("jsonschema");
