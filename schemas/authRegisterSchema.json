@@ -13,6 +13,7 @@
     "properties": {
         "username": {
             "type": "string",
+            "minLength": 1,
             "default": "",
             "title": "The username Schema",
             "examples": [
@@ -21,6 +22,7 @@
         },
         "password": {
             "type": "string",
+            "minLength": 6,
             "default": "",
             "title": "The password Schema",
             "examples": [
@@ -29,6 +31,7 @@
         },
         "firstName": {
             "type": "string",
+            "minLength": 1,
             "default": "",
             "title": "The firstName Schema",
             "examples": [
@@ -37,6 +40,7 @@
         },
         "lastName": {
             "type": "string",
+            "minLength": 1,
             "default": "",
             "title": "The lastName Schema",
             "examples": [

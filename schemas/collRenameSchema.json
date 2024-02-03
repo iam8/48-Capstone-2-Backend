@@ -10,6 +10,7 @@
     "properties": {
         "newTitle": {
             "type": "string",
+            "minLength": 1,
             "default": "",
             "title": "The newTitle Schema",
             "examples": [
