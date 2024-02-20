@@ -141,7 +141,7 @@ router.get("/", ensureAdmin, async (req, res, next) => {
 
 /** GET /users/[username] - get all collections by the username specified in URL.
  *
- * Returns: `{collections: [id, title, username]}`.
+ * Returns: `{collections: [{id, title, username}, ...]}`.
  *
  * Authorization required: admin or user corresponding to given username
  */
