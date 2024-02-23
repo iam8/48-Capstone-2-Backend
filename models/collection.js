@@ -47,8 +47,8 @@ class Collection {
      * Get all data on a single collection by ID.
      *
      * @param {number} id Target collection ID
-     * @returns {Promise<object>} `{id, title, username, colors}`, where `colors` is a list of color hex
-     * values in this collection.
+     * @returns {Promise<object>} `{id, title, username, colors}`, where `colors` is a list of
+     * color hex values in this collection.
      *
      * Throws `NotFoundError` if no collection with the given ID exists.
      */
