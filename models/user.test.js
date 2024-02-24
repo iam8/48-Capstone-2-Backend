@@ -153,8 +153,8 @@ describe("get()", () => {
 
         const {username, firstName, lastName, isAdmin} = userData[0];
         const collections = userData[0].collections.map(coll => {
-            const {id, title} = coll;
-            return {id, title};
+            const {id, title, colors} = coll;
+            return {id, title, colors};
         });
 
         expect(result).toEqual({username, firstName, lastName, isAdmin, collections});
