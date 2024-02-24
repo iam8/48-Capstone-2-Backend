@@ -160,16 +160,11 @@ class User {
             [username]
         );
 
-        console.log("COLLECTIONS RESULT: ", collectionData.rows);
+        // console.log("COLLECTIONS RESULT: ", collectionData.rows);
 
-        /**  [
-      { id: 66, title: 'coll-u0-1', color_hex: '000000' },
-      { id: 66, title: 'coll-u0-1', color_hex: '111111' },
-      { id: 66, title: 'coll-u0-1', color_hex: '222222' },
-      { id: 67, title: 'coll-u0-2', color_hex: 'aaaaaa' },
-      { id: 67, title: 'coll-u0-2', color_hex: 'bbbbbb' },
-      { id: 68, title: 'coll-u0-3', color_hex: null }
-        ] */
+        // TODO: investigate if indexing + multiple queries might be more efficient
+        // Indexing is already done (primary key); do the query way and time it, especially for
+        // large datasets (this is to be done much later)
 
         // Put together final result
         const rows = collectionData.rows;
