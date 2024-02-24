@@ -129,7 +129,8 @@ class User {
      *
      * @param {string} username Target user's username
      * @returns {Promise<object>} `{username, firstName, lastName, isAdmin, collections}`,
-     * where `collections` is `[{ id, title }, ...]`
+     * where `collections` is `[{ id, title, colors }, ...]`
+     * and `colors` is an array of hex values.
      *
      * Throws `NotFoundError` if user not found.
      **/
@@ -145,22 +146,58 @@ class User {
         );
 
         const user = userRes.rows[0];
-
         if (!user) throw new NotFoundError(`No user: ${username}`);
 
-        const collectionsRes = await db.query(
+        const collectionData = await db.query(
             `SELECT coll.id,
-                    coll.title
-            FROM collections as coll
-            WHERE coll.creator_username = $1`,
+                    coll.title,
+                    coll_col.color_hex AS hex
+            FROM collections AS coll
+            LEFT JOIN collections_colors AS coll_col
+                ON coll.id = coll_col.collection_id
+            WHERE coll.creator_username = $1
+            ORDER BY coll.id`,
             [username]
         );
 
-        user.collections = collectionsRes.rows.map(coll => ({
-            id: coll.id,
-            title: coll.title
-        }));
+        console.log("COLLECTIONS RESULT: ", collectionData.rows);
 
+        /**  [
+      { id: 66, title: 'coll-u0-1', color_hex: '000000' },
+      { id: 66, title: 'coll-u0-1', color_hex: '111111' },
+      { id: 66, title: 'coll-u0-1', color_hex: '222222' },
+      { id: 67, title: 'coll-u0-2', color_hex: 'aaaaaa' },
+      { id: 67, title: 'coll-u0-2', color_hex: 'bbbbbb' },
+      { id: 68, title: 'coll-u0-3', color_hex: null }
+        ] */
+
+        // Put together final result
+        const rows = collectionData.rows;
+        const collections = [];
+        const seenIds = new Set();
+
+        for (let outer of rows) {
+            const {id, title} = outer;
+
+            if (!seenIds.has(outer.id)) {
+
+                // Create new collection entry
+                const entry = {id, title, colors: []};
+
+                // Find all colors associated with the current outer loop row
+                for (let inner of rows) {
+                    if (inner.id === id && inner.hex) {
+                        entry.colors.push(inner.hex);
+                    }
+                }
+
+                collections.push(entry);
+            }
+
+            seenIds.add(id);
+        }
+
+        user.collections = collections;
         return user;
     }
 
