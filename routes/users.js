@@ -56,7 +56,8 @@ router.get("/", ensureAdmin, async function (req, res, next) {
 
 
 /** GET /[username] => { user: { username, firstName, lastName, isAdmin, collections }},
- *  where collections is [{ id, title }...].
+ *  where collections is [{ id, title, colors }, ...]
+ *  and colors is an array of hex values.
  *
  * Get data on user specified by username in URL.
  *
